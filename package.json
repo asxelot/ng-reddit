@@ -4,10 +4,13 @@
   "version": "0.0.1",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.13.3",
     "bower": "^1.5.2",
-    "express": "^4.13.3"
+    "express": "^4.13.3",
+    "mongoose": "^4.1.6"
   },
   "devDependencies": {
-    "gulp": "^3.9.0"
+    "gulp": "^3.9.0",
+    "gulp-livereload": "^3.8.0"
   }
 }
