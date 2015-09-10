@@ -1,0 +1,13 @@
+{
+  "name": "ng-reddit",
+  "description": "Reddit clone on MEAN stack",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "^1.5.2",
+    "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  }
+}

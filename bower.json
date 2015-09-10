@@ -1,0 +1,9 @@
+{
+  "name": "ng-reddit",
+  "description": "Reddit clone on MEAN stack",
+  "version": "0.0.1",
+  "license": "MIT",
+  "dependencies": {
+    "angular": "angularjs#~1.4.5"
+  }
+}
