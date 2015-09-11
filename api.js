@@ -1,6 +1,6 @@
 var router  = require('express').Router(),
-    Post    = require('./models/Posts'),
-    Comment = require('./models/Comments');
+    Post    = require('./models/Post'),
+    Comment = require('./models/Comment');
 
 
 // Post

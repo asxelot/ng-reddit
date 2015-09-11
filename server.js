@@ -1,13 +1,14 @@
 var express        = require('express'),
     app            = express(),
-    fs = require('fs'),
+    fs             = require('fs'),
     morgan         = require('morgan'),
     mongoose       = require('mongoose'),
     methodOverride = require('method-override'),
-    bodyParser     = require('body-parser');
+    bodyParser     = require('body-parser'),
+    config         = require('./config.js');
 
 mongoose
-  .connect('mongodb://localhost/ng-reddit')
+  .connect(config.db[app.settings.env])
   .connection
     .on('error', console.error.bind(console, 'MongoErr: '))
     .once('open', function() {
