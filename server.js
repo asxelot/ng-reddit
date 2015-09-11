@@ -1,5 +1,7 @@
 var express        = require('express'),
     app            = express(),
+    fs = require('fs'),
+    morgan         = require('morgan'),
     mongoose       = require('mongoose'),
     methodOverride = require('method-override'),
     bodyParser     = require('body-parser');
@@ -13,10 +15,18 @@ mongoose
     })
 ;
 
+var logStream = fs.createWriteStream(__dirname + '/errors.log',
+  {flags: 'a'});
+
 app
   .use(methodOverride('X-HTTP-Method-Override'))
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
+
+  .use(morgan('combined', {
+    skip: function(req, res) { return res.statusCode < 400; },
+    stream: logStream
+  }))
 
   .use(express.static('public'))
   .use('/api', require('./api'))
@@ -27,7 +37,7 @@ app
 
   .use(function(err, req, res, next) {
     if (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).send('Server error!');
     }
   })

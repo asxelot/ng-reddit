@@ -11,7 +11,7 @@ router
 
     query.exec(function(err, post) {
       if (err) return next(err);
-      if (!post) return res.status(404).send('Post not fined!');
+      if (!post) return res.status(404).send('Post not found!');
 
       req.post = post;
       return next();
@@ -69,7 +69,7 @@ router
 
     query.exec(function(err, comment) {
       if (err) return next(err);
-      if (!comment) return res.status(404).send('Comment not fined!');
+      if (!comment) return res.status(404).send('Comment not found!');
 
       req.comment = comment;
       return next();
