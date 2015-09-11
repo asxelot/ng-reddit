@@ -12,13 +12,25 @@
     "morgan": "^1.6.1"
   },
   "devDependencies": {
+    "angular-mocks": "^1.4.5",
     "chai": "^3.2.0",
     "gulp": "^3.9.0",
     "gulp-livereload": "^3.8.0",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.13.9",
+    "karma-beep-reporter": "^0.1.4",
+    "karma-chrome-launcher": "^0.2.0",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-ie-launcher": "^0.2.0",
+    "karma-jasmine": "^0.3.6",
+    "karma-ng-html2js-preprocessor": "^0.1.2",
+    "karma-opera-launcher": "^0.3.0",
+    "karma-safari-launcher": "^0.1.1",
     "mocha": "^2.3.2",
     "mocha-mongoose": "^1.1.0",
-    "mongodb": "^2.0.42",
-    "should": "^7.1.0"
+    "mongodb": "^2.0.42"
   },
-  "scripts": {}
+  "scripts": {
+    "karma": "node node_modules/karma/bin/karma start"
+  }
 }

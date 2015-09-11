@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="ngReddit">
 <head>
+  <base href="/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ng-reddit</title>
   <script src="libs/angular/angular.min.js"></script>
+  <script src="libs/angular-resource/angular-resource.min.js"></script>
+  <script src="libs/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/factories.js"></script>
 </head>
 <body ng-controller="mainCtrl">
-  {{hello}}
+  <h1>ng-reddit</h1>
 
-  <div ng-repeat="post in posts | orderBy: '-upvotes'">
-    {{post.title}} - {{post.upvotes}}
-  </div>
-  <button ng-click="addPost()">Post</button>
+  <ui-view></ui-view>
 </body>
 </html>

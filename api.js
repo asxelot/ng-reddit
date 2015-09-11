@@ -25,6 +25,13 @@ router
         res.json(post);
       });
     })
+    .delete(function(req, res) {
+      req.post.remove(function(err) {
+        if (err) return next(err);
+
+        res.send(200);
+      });
+    })
 ;
 
 router
