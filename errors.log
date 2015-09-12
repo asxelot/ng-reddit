@@ -1,3 +1,0 @@
-::1 - - [11/Sep/2015:14:37:07 +0000] "GET /api/posts/55f2d6e278c7de1c1548c24f HTTP/1.1" 404 15 "http://localhost:8080/posts/55f2d6e278c7de1c1548c24f" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36"
-::1 - - [11/Sep/2015:21:23:20 +0000] "PUT /api/posts/upvote HTTP/1.1" 404 29 "http://localhost:8080/" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36"
-::1 - - [12/Sep/2015:13:30:25 +0000] "GET /api/posts/55f428b933584a7c173fca2e HTTP/1.1" 404 15 "http://localhost:8080/posts/55f428b933584a7c173fca2e" "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36"
