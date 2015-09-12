@@ -5,8 +5,8 @@ describe('Unit: homeCtrl', function() {
 
   beforeEach(module(function($provide) {
     $provide.value('posts', [
-        { title: 'First post' },
-        { title: 'Second post' }
+        { _id: '1', title: 'First post' },
+        { _id: '2', title: 'Second post' }
       ]);
   }));
 
@@ -29,6 +29,14 @@ describe('Unit: homeCtrl', function() {
     expect(scope.posts.length).toBe(2);
   });
 
+  it('should not add new post', function() {
+    scope.newPost = {};
+
+    scope.addPost();
+
+    expect(scope.posts.length).toBe(2);
+  });
+
   it('should add new post', function() {
     scope.newPost = { title: 'Third post' };
 
@@ -44,14 +52,31 @@ describe('Unit: homeCtrl', function() {
     expect(scope.newPost).toEqual({});
   });
 
-  it('should not add new post', function() {
-    scope.newPost = {};
+  it('should delete post', function() {
+    httpBackend.when('DELETE', '/api/posts/1').respond({});
 
-    httpBackend.when('POST', '/api/posts', scope.newPost)
-      .respond(scope.newPost);
+    scope.delete({ _id: '1' });
 
-    scope.addPost();
+    httpBackend.flush();
 
-    expect(scope.posts.length).toBe(2);
+    expect(scope.posts.length).toBe(1);
+  });
+
+  it('should upvote post', function() {
+    var post = {
+      _id: '123',
+      title: 'test post',
+      upvotes: 0
+    };
+
+    var url = '/api/posts/' + post._id + '/upvote';
+
+    httpBackend.when('PUT', url).respond(post);
+
+    scope.upvote(post);
+
+    httpBackend.flush();
+
+    expect(post.upvotes).toBe(1);
   });
 });

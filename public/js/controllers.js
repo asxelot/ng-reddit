@@ -17,7 +17,10 @@ app
     };
 
     $scope.upvote = function(post) {
-      Posts.update({ id: post._id }, function() {
+      return Posts.update({
+        id: post._id,
+        vote: 'upvote'
+      }, function() {
         post.upvotes++;
       });
     };
@@ -29,7 +32,32 @@ app
     };
   })
 
-  .controller('postsCtrl', function($scope, post) {
+  .controller('postCtrl', function($scope, Comments, post) {
     $scope.post = post;
+    $scope.newComment = {
+      body: '',
+      post: post._id
+    };
+
+    $scope.addComment = function() {
+      if (!$scope.newComment.body) return;
+
+      Comments.save({
+        postId: post._id,
+      }, $scope.newComment, function(comment) {
+        post.comments.push(comment);
+        $scope.newComment.body = '';
+      });
+    };
+
+    $scope.upvoteComment = function(comment) {
+      Comments.update({
+        id: comment._id,
+        postId: post._id,
+        vote: 'upvote'
+      }, function() {
+        comment.upvotes++;
+      });
+    };
   })
 ;

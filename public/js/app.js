@@ -17,8 +17,8 @@ var app = angular.module('ngReddit', [
       })
       .state('posts', {
         url: '/posts/{id}',
-        templateUrl: 'views/posts.html',
-        controller: 'postsCtrl',
+        templateUrl: 'views/post.html',
+        controller: 'postCtrl',
         resolve: {
           post: function($stateParams, Posts) {
             return Posts.get({ id: $stateParams.id });
