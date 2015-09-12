@@ -1,0 +1,16 @@
+<h3>{{post.title}}</h3>
+<a href="#" ng-click="downvote(post)">-</a>
+{{post.upvotes}}
+<a href="#" ng-click="upvote(post)">+</a>
+
+<div ng-repeat="comment in post.comments">
+  <a href="#" ng-click="downvote(comment)">-</a>
+  {{comment.upvotes}}
+  <a href="#" ng-click="upvoteComment(comment)">+</a>
+  {{comment.body}}
+</div>
+
+<form name="newCommentForm" ng-submit="addComment()" novalidate>
+  <textarea name="comment" cols="30" rows="10" ng-model="newComment.body"></textarea>
+  <button type="submit">Submit</button>
+</form>

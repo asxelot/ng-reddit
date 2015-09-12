@@ -5,9 +5,12 @@
 </form>
 
 <div ng-repeat="post in posts | orderBy: '-upvotes'">
-  <a href="#">-</a> {{post.upvotes}} <a href="#" ng-click="upvote(post)">+</a>
-  <a href="/posts/{{post._id}}">{{post.title}}</a>
+  <h4>{{post.title}}</h4>
+  <a href="#" ng-click="downvote(post)">-</a>
+  {{post.upvotes}}
+  <a href="#" ng-click="upvote(post)">+</a>
   <a href="#" ng-click="delete(post)">delete</a>
+  <a href="/posts/{{post._id}}">comments</a>
 </div>
 
 <pre>{{newPostForm|json}}</pre>
