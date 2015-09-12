@@ -30,16 +30,28 @@ describe('Unit: homeCtrl', function() {
   });
 
   it('should add new post', function() {
-    var newPost = { title: 'Third post' };
+    scope.newPost = { title: 'Third post' };
 
-    httpBackend.when('POST', '/api/posts', newPost)
-      .respond(newPost);
+    httpBackend.when('POST', '/api/posts', scope.newPost)
+      .respond(scope.newPost);
 
     scope.addPost();
 
     httpBackend.flush();
 
     expect(scope.posts.length).toBe(3);
-    expect(scope.posts[2].title).toEqual(newPost.title);
+    expect(scope.posts[2].title).toEqual('Third post');
+    expect(scope.newPost).toEqual({});
+  });
+
+  it('should not add new post', function() {
+    scope.newPost = {};
+
+    httpBackend.when('POST', '/api/posts', scope.newPost)
+      .respond(scope.newPost);
+
+    scope.addPost();
+
+    expect(scope.posts.length).toBe(2);
   });
 });

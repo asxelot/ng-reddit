@@ -1,15 +1,18 @@
 app
   .controller('mainCtrl', function($scope) {
     $scope.title = "Home";
-
   })
 
   .controller('homeCtrl', function($scope, posts, Posts) {
+    $scope.newPost = {};
     $scope.posts = posts;
 
     $scope.addPost = function() {
+      if (!$scope.newPost.title) return;
+
       Posts.save($scope.newPost, function(post) {
         $scope.posts.push(post);
+        $scope.newPost = {};
       });
     };
 
