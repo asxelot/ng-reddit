@@ -8,7 +8,4 @@ describe('Unit: mainCtrl', function() {
     ctrl = $controller('mainCtrl', { $scope: scope });
   }));
 
-  it('$scope.title should be a "Home"', function() {
-    expect(scope.title).toEqual('Home');
-  });
 });

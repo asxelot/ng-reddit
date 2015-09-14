@@ -1,9 +1,9 @@
-var config = require('../config.js'),
+var configDB = require('../../config/db.js'),
     mongoose = require('mongoose'),
     expect = require('chai').expect,
-    clearDB = require('mocha-mongoose')(config.db.test, {noClear: true}),
-    Post = require('../models/Post'),
-    Comment = require('../models/Comment');
+    clearDB = require('mocha-mongoose')(configDB.test, {noClear: true}),
+    Post = require('../../models/Post'),
+    Comment = require('../../models/Comment');
 
 process.env.NODE_ENV = 'test';
 

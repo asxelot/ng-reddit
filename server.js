@@ -1,34 +1,32 @@
-var express        = require('express'),
-    app            = express(),
-    fs             = require('fs'),
-    morgan         = require('morgan'),
-    mongoose       = require('mongoose'),
-    methodOverride = require('method-override'),
-    bodyParser     = require('body-parser'),
-    config         = require('./config.js');
+var express      = require('express'),
+    app          = express(),
+    port         = process.env.PORT || 8080,
+    fs           = require('fs'),
+    morgan       = require('morgan'),
+    mongoose     = require('mongoose'),
+    passport     = require('passport'),
+    bodyParser   = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    session      = require('cookie-session'),
+    configDB     = require('./config/db.js');
 
 mongoose
-  .connect(config.db[app.settings.env])
+  .connect(configDB[app.settings.env])
   .connection
-    .on('error', console.error.bind(console, 'MongoErr: '))
-    .once('open', function() {
-      console.log('Connected to DB');
-    })
-;
+    .once('open', function() { console.log('Connected to DB'); })
+    .on('error', function(err) { console.error('MongoErr: ', err); });
 
-var logStream = fs.createWriteStream(__dirname + '/errors.log',
-  {flags: 'a'});
+require('./config/passport')(passport);
 
 app
-  .use(methodOverride('X-HTTP-Method-Override'))
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
+  .use(cookieParser())
   .use(morgan('dev'))
 
-  .use(morgan('combined', {
-    skip: function(req, res) { return res.statusCode < 400; },
-    stream: logStream
-  }))
+  .use(session({ secret: 'secret' }))
+  .use(passport.initialize())
+  .use(passport.session())
 
   .use(express.static('public'))
   .use('/api', require('./api'))
@@ -37,14 +35,9 @@ app
     res.sendFile(__dirname + '/public/index.html');
   })
 
-  .use(function(err, req, res, next) {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Server error!');
-    }
-  })
-;
+  .use(function(err, req, res) {
+    if (err) res.status(500).json(err);
+  });
 
-app.listen(8080, function() {
-  console.log('Server started');
-});
+app.listen(port);
+console.log('Server started');

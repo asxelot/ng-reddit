@@ -1,6 +1,16 @@
 app
-  .controller('mainCtrl', function($scope) {
-    $scope.title = "Home";
+  .controller('mainCtrl', function($rootScope, $scope, $http) {
+    $rootScope.errors = [];
+
+    $http.get('/api/authcheck').success(function(user) {
+      $rootScope.user = user;
+    });
+
+    $scope.logout = function() {
+      $http.get('/api/logout').success(function() {
+        $rootScope.user = null;
+      });
+    };
   })
 
   .controller('homeCtrl', function($scope, posts, Posts) {
@@ -8,7 +18,7 @@ app
     $scope.posts = posts;
 
     $scope.addPost = function() {
-      if (!$scope.newPost.title) return;
+      if (!$scope.newPost.title) return false;
 
       Posts.save($scope.newPost, function(post) {
         $scope.posts.push(post);
@@ -58,6 +68,43 @@ app
       }, function() {
         comment.upvotes++;
       });
+    };
+  })
+
+  .controller('signupCtrl', function($rootScope, $scope, $http, $location) {
+    if ($rootScope.user) return $location.path('/');
+    $scope.newUser = {};
+
+    $scope.signup = function() {
+      if ($scope.newUser.password !== $scope.newUser.confirmPassword)
+        return false;
+
+      $http
+        .post('/api/signup', $scope.newUser)
+        .success(function(user) {
+          $rootScope.user = user;
+          $location.path('/');
+        })
+        .error(function(err) {
+          $rootScope.errors.push(err);
+        });
+    };
+  })
+
+  .controller('loginCtrl', function($rootScope, $scope, $http, $location) {
+    if ($rootScope.user) return $location.path('/');
+    $scope.loggedUser = {};
+
+    $scope.login = function() {
+      $http
+        .post('/api/login', $scope.loggedUser)
+        .success(function(user) {
+          $rootScope.user = user;
+          $location.path('/');
+        })
+        .error(function(err) {
+          $rootScope.errors.push(err);
+        });
     };
   })
 ;

@@ -10,14 +10,15 @@ describe('Unit: homeCtrl', function() {
       ]);
   }));
 
-  beforeEach(inject(function($controller, $rootScope, $httpBackend, $injector, posts, _Posts_) {
-    httpBackend = $httpBackend;
-    Posts = _Posts_;
-    scope = $rootScope.$new();
-    ctrl = $controller('homeCtrl', {
-      $scope: scope,
-      posts: posts
-    });
+  beforeEach(inject(
+    function($controller, $rootScope, $httpBackend, $injector, posts, _Posts_) {
+      httpBackend = $httpBackend;
+      Posts = _Posts_;
+      scope = $rootScope.$new();
+      ctrl = $controller('homeCtrl', {
+        $scope: scope,
+        posts: posts
+      });
   }));
 
   afterEach(function() {
@@ -32,8 +33,7 @@ describe('Unit: homeCtrl', function() {
   it('should not add new post', function() {
     scope.newPost = {};
 
-    scope.addPost();
-
+    expect(scope.addPost()).toBe(false);
     expect(scope.posts.length).toBe(2);
   });
 

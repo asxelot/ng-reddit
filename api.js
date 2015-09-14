@@ -1,7 +1,12 @@
-var router  = require('express').Router(),
-    Post    = require('./models/Post'),
-    Comment = require('./models/Comment');
+var router   = require('express').Router(),
+    passport = require('passport'),
+    Post     = require('./models/Post'),
+    Comment  = require('./models/Comment');
 
+function auth(req, res, next) {
+  if (req.user) return next();
+  res.status(401).json('Unauthorized');
+}
 
 // Post
 
@@ -57,13 +62,19 @@ router
         res.json(posts);
       });
     })
-    .post(function(req, res, next) {
+    .post(auth, function(req, res, next) {
       var post = new Post(req.body);
+      post.author = req.user.username;
 
       post.save(function(err, post) {
         if (err) return next(err);
 
-        res.json(post);
+        req.user.posts.push(post);
+        req.user.save(function(err) {
+          if (err) return next(err);
+
+          res.json(post);
+        });
       });
     })
 ;
@@ -86,6 +97,7 @@ router
     .post(function(req, res, next) {
       var comment = new Comment(req.body);
       comment.post = req.post;
+      comment.author = req.payload.username;
 
       comment.save(function(err, comment) {
         if (err) return next(err);
@@ -110,5 +122,26 @@ router
       });
     })
 ;
+
+// Auth
+
+router
+  .post('/signup', passport.authenticate('local-signup'), function(req, res) {
+      res.json(req.user);
+    })
+
+  .post('/login', passport.authenticate('local-login'), function(req, res) {
+      res.json(req.user);
+    })
+
+  .get('/authcheck', function(req, res) {
+      res.json(req.user);
+    })
+
+  .get('/logout', function(req, res) {
+    req.logout();
+    res.sendStatus(200);
+  });
+
 
 module.exports = router;
