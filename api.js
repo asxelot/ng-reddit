@@ -42,9 +42,12 @@ router
 ;
 
 router
-  .route('/posts/:post/upvote')
+  .route('/posts/:post/vote/:vote')
     .put(auth, function(req, res, next) {
-      req.post.upvote(function(err, post) {
+      if (Math.abs(req.params.vote) != 1)
+        return res.sendStatus(406);
+
+      req.post.vote(+req.params.vote, req.user.username, function(err, post) {
         if (err) return next(err);
 
         res.json(post);
@@ -67,6 +70,7 @@ router
     .post(auth, function(req, res, next) {
       var post = new Post(_.pick(req.body, 'title', 'link'));
       post.author = req.user.username;
+      post.upvoted.push(req.user.username);
 
       post.save(function(err, post) {
         if (err) return next(err);

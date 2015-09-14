@@ -13,7 +13,7 @@ app
     };
   })
 
-  .controller('homeCtrl', function($scope, posts, Posts) {
+  .controller('homeCtrl', function($scope, $http, posts, Posts) {
     $scope.newPost = {};
     $scope.posts = posts;
 
@@ -26,13 +26,24 @@ app
       });
     };
 
-    $scope.upvote = function(post) {
-      return Posts.update({
-        id: post._id,
-        vote: 'upvote'
-      }, function() {
-        post.upvotes++;
-      });
+    $scope.vote = function(post, n) {
+      $http
+        .put('/api/posts/' + post._id + '/vote/' + n)
+        .success(function() {
+          var vote = n > 0 ? 'upvoted' : 'downvoted',
+              username = $scope.user.username;
+
+          function remove(a, e) {
+            var i = a.indexOf(e);
+            if (i > -1) return a.splice(i, 1);
+          }
+
+          if (~post[vote].indexOf($scope.user.username))
+            remove(post[vote], username);
+          else
+            post[vote].push(username);
+          remove(post[n < 0 ? 'upvoted' : 'downvoted'], username);
+        });
     };
 
     $scope.delete = function(post) {

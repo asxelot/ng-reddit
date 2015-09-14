@@ -1,7 +1,9 @@
 var mongoose = require('mongoose'),
+    shortid  = require('shortid'),
     bcrypt = require('bcrypt-nodejs');
 
 var UserSchema = mongoose.Schema({
+  _id: { type: String, unique: true, default: shortid.generate },
   username: String,
   local: {
     email: String,

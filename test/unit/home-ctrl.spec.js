@@ -63,20 +63,26 @@ describe('Unit: homeCtrl', function() {
   });
 
   it('should upvote post', function() {
+    scope.user = {
+      username: 'test'
+    };
+
     var post = {
       _id: '123',
       title: 'test post',
-      upvotes: 0
+      upvoted: [],
+      downvoted: ['test']
     };
 
-    var url = '/api/posts/' + post._id + '/upvote';
+    var url = '/api/posts/' + post._id + '/vote/1';
 
     httpBackend.when('PUT', url).respond(post);
 
-    scope.upvote(post);
+    scope.vote(post, 1);
 
     httpBackend.flush();
 
-    expect(post.upvotes).toBe(1);
+    expect(post.upvoted).toEqual(['test']);
+    expect(post.downvoted).toEqual([]);
   });
 });
