@@ -6,9 +6,10 @@
 
 <div ng-repeat="post in posts | orderBy: '-upvotes'">
   <h4>{{post.title}}</h4>
+  <p>({{post.author}})</p>
   <a href="#" ng-click="downvote(post)">-</a>
   {{post.upvotes}}
   <a href="#" ng-click="upvote(post)">+</a>
-  <a href="#" ng-click="delete(post)">delete</a>
+  <a href="#" ng-show="user.username === post.author" ng-click="delete(post)">delete</a>
   <a href="/posts/{{post._id}}">comments</a>
 </div>

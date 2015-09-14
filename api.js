@@ -1,20 +1,19 @@
 var router   = require('express').Router(),
     passport = require('passport'),
+    _        = require('lodash'),
     Post     = require('./models/Post'),
     Comment  = require('./models/Comment');
 
 function auth(req, res, next) {
   if (req.user) return next();
-  res.status(401).json('Unauthorized');
+  res.status(401).send('Unauthorized');
 }
 
 // Post
 
 router
   .param('post', function(req, res, next, id) {
-    var query = Post.findById(id);
-
-    query.exec(function(err, post) {
+    Post.findById(id, function(err, post) {
       if (err) return next(err);
       if (!post) return res.status(404).send('Post not found!');
 
@@ -30,7 +29,10 @@ router
         res.json(post);
       });
     })
-    .delete(function(req, res) {
+    .delete(auth, function(req, res) {
+      if (req.user.username !== req.post.author)
+        return res.sendStatus(401);
+
       req.post.remove(function(err) {
         if (err) return next(err);
 
@@ -41,7 +43,7 @@ router
 
 router
   .route('/posts/:post/upvote')
-    .put(function(req, res, next) {
+    .put(auth, function(req, res, next) {
       req.post.upvote(function(err, post) {
         if (err) return next(err);
 
@@ -63,18 +65,13 @@ router
       });
     })
     .post(auth, function(req, res, next) {
-      var post = new Post(req.body);
+      var post = new Post(_.pick(req.body, 'title', 'link'));
       post.author = req.user.username;
 
       post.save(function(err, post) {
         if (err) return next(err);
 
-        req.user.posts.push(post);
-        req.user.save(function(err) {
-          if (err) return next(err);
-
-          res.json(post);
-        });
+        res.json(post);
       });
     })
 ;
@@ -83,9 +80,7 @@ router
 
 router
   .param('comment', function(req, res, next, id) {
-    var query = Comment.findById(id);
-
-    query.exec(function(err, comment) {
+    Comment.findById(id, function(err, comment) {
       if (err) return next(err);
       if (!comment) return res.status(404).send('Comment not found!');
 
@@ -94,10 +89,10 @@ router
     });
   })
   .route('/posts/:post/comments')
-    .post(function(req, res, next) {
-      var comment = new Comment(req.body);
+    .post(auth, function(req, res, next) {
+      var comment = new Comment(_.pick(req.body, 'body'));
       comment.post = req.post;
-      comment.author = req.payload.username;
+      comment.author = req.user.username;
 
       comment.save(function(err, comment) {
         if (err) return next(err);
@@ -114,7 +109,7 @@ router
 
 router
   .route('/posts/:post/comments/:comment/upvote')
-    .put(function(req, res, next) {
+    .put(auth, function(req, res, next) {
       req.comment.upvote(function(err, comment) {
         if (err) return next(err);
 

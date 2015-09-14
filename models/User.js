@@ -3,8 +3,6 @@ var mongoose = require('mongoose'),
 
 var UserSchema = mongoose.Schema({
   username: String,
-  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
   local: {
     email: String,
     password: String

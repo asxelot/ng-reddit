@@ -11,6 +11,7 @@
     "cookie-session": "^1.2.0",
     "express": "^4.13.3",
     "express-session": "^1.11.3",
+    "lodash": "^3.10.1",
     "method-override": "^2.3.5",
     "mongoose": "^4.1.6",
     "morgan": "^1.6.1",
@@ -39,12 +40,9 @@
   },
   "scripts": {
     "postinstall": "bower install",
-
     "start": "mongod | node server.js",
-
     "test": "node node_modules/karma/bin/karma start test/karma.conf.js",
     "test-single-run": "node node_modules/karma/bin/karma start test/karma.conf.js  --single-run",
-
     "protractor": "protractor test/protractor.conf.js"
   }
 }
