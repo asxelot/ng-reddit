@@ -18,20 +18,15 @@ function remove(a, e) {
   if (i > -1) return a.splice(i, 1);
 }
 
-function getVotes() {
-  return this.upvoted.length - this.downvoted.length;
-}
-
 PostSchema.methods.vote = function(n, username, cb) {
-  var vote = n > 0 ? 'upvoted' : 'downvoted',
-      antivote = n < 0 ? 'upvoted' : 'downvoted';
+  var vote = n > 0 ? 'upvoted' : 'downvoted';
 
   if (~this[vote].indexOf(username))
     remove(this[vote], username);
   else
     this[vote].push(username);
 
-  remove(this[antivote], username);
+  remove(this[n < 0 ? 'upvoted' : 'downvoted'], username);
 
   this.save(cb);
 };

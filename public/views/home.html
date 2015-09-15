@@ -11,6 +11,12 @@
   {{post.upvoted.length - post.downvoted.length}}
   <a href="#" ng-click="vote(post, 1)">+</a>
   <a href="#" ng-show="user.username === post.author" ng-click="delete(post)">delete</a>
-  <a href="/posts/{{post._id}}">comments</a>
+  <a href="/posts/{{post._id}}">
+    <ng-pluralize count="post.comments.length" when="{
+      1: '1 комментарий',
+      few: '{} комментария',
+      many: '{} комментариев'
+    }"></ng-pluralize>
+  </a>
 </div>
 

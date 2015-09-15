@@ -9,8 +9,8 @@ var app = angular.module('ngReddit', [
         templateUrl: 'views/home.html',
         controller: 'homeCtrl',
         resolve: {
-          posts: function(Posts) {
-            return Posts.query();
+          posts: function(_posts) {
+            return _posts.query();
           }
         }
       })
@@ -18,8 +18,8 @@ var app = angular.module('ngReddit', [
         templateUrl: 'views/post.html',
         controller: 'postCtrl',
         resolve: {
-          post: function($route, Posts) {
-            return Posts.get({ id: $route.current.params.id });
+          post: function($route, _posts) {
+            return _posts.get({ id: $route.current.params.id });
           }
         }
       })

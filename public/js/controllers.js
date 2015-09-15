@@ -13,14 +13,14 @@ app
     };
   })
 
-  .controller('homeCtrl', function($scope, $http, posts, Posts) {
+  .controller('homeCtrl', function($scope, $http, _posts, _remove, posts) {
     $scope.newPost = {};
     $scope.posts = posts;
 
     $scope.addPost = function() {
       if (!$scope.newPost.title) return false;
 
-      Posts.save($scope.newPost, function(post) {
+      _posts.save($scope.newPost, function(post) {
         $scope.posts.push(post);
         $scope.newPost = {};
       });
@@ -33,27 +33,22 @@ app
           var vote = n > 0 ? 'upvoted' : 'downvoted',
               username = $scope.user.username;
 
-          function remove(a, e) {
-            var i = a.indexOf(e);
-            if (i > -1) return a.splice(i, 1);
-          }
-
           if (~post[vote].indexOf($scope.user.username))
-            remove(post[vote], username);
+            _remove(post[vote], username);
           else
             post[vote].push(username);
-          remove(post[n < 0 ? 'upvoted' : 'downvoted'], username);
+          _remove(post[n < 0 ? 'upvoted' : 'downvoted'], username);
         });
     };
 
     $scope.delete = function(post) {
-      Posts.delete({ id: post._id }, function() {
-        $scope.posts.splice($scope.posts.indexOf(post), 1);
+      _posts.delete({ id: post._id }, function() {
+        _remove($scope.posts, post);
       });
     };
   })
 
-  .controller('postCtrl', function($scope, Comments, post) {
+  .controller('postCtrl', function($scope, _comments, post) {
     $scope.post = post;
     $scope.newComment = {
       body: '',
@@ -63,7 +58,7 @@ app
     $scope.addComment = function() {
       if (!$scope.newComment.body) return;
 
-      Comments.save({
+      _comments.save({
         postId: post._id,
       }, $scope.newComment, function(comment) {
         post.comments.push(comment);
@@ -72,7 +67,7 @@ app
     };
 
     $scope.upvoteComment = function(comment) {
-      Comments.update({
+      _comments.update({
         id: comment._id,
         postId: post._id,
         vote: 'upvote'
@@ -95,9 +90,6 @@ app
         .success(function(user) {
           $rootScope.user = user;
           $location.path('/');
-        })
-        .error(function(err) {
-          $rootScope.errors.push(err);
         });
     };
   })
@@ -112,9 +104,6 @@ app
         .success(function(user) {
           $rootScope.user = user;
           $location.path('/');
-        })
-        .error(function(err) {
-          $rootScope.errors.push(err);
         });
     };
   })

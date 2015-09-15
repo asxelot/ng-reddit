@@ -6,7 +6,7 @@ var router   = require('express').Router(),
 
 function auth(req, res, next) {
   if (req.user) return next();
-  res.status(401).send('Unauthorized');
+  res.sendStatus(401);
 }
 
 // Post
@@ -14,8 +14,8 @@ function auth(req, res, next) {
 router
   .param('post', function(req, res, next, id) {
     Post.findById(id, function(err, post) {
-      if (err) return next(err);
       if (!post) return res.status(404).send('Post not found!');
+      if (err) return next(err);
 
       req.post = post;
       return next();
@@ -85,8 +85,8 @@ router
 router
   .param('comment', function(req, res, next, id) {
     Comment.findById(id, function(err, comment) {
-      if (err) return next(err);
       if (!comment) return res.status(404).send('Comment not found!');
+      if (err) return next(err);
 
       req.comment = comment;
       return next();
@@ -94,7 +94,7 @@ router
   })
   .route('/posts/:post/comments')
     .post(auth, function(req, res, next) {
-      var comment = new Comment(_.pick(req.body, 'body'));
+      var comment = new Comment(req.body.body);
       comment.post = req.post;
       comment.author = req.user.username;
 
