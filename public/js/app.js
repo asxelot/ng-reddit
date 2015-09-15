@@ -36,4 +36,18 @@ var app = angular.module('ngReddit', [
 
     $locationProvider.html5Mode(true);
   })
+
+  .config(function($httpProvider) {
+    $httpProvider.interceptors.push(function($q, $rootScope) {
+      function onError(err) {
+        $rootScope.errors.push(err.data);
+        return $q.reject(err);
+      }
+
+      return {
+        requestError: onError,
+        responseError: onError
+      }
+    })
+  })
 ;
