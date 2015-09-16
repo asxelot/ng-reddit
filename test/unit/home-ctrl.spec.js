@@ -1,88 +1,94 @@
 describe('Unit: homeCtrl', function() {
-  var ctrl, scope, httpBackend, Posts;
+  var ctrl, scope, httpBackend, Posts
 
-  beforeEach(module('ngReddit'));
+  beforeEach(module('ngReddit'))
 
   beforeEach(module(function($provide) {
     $provide.value('posts', [
-        { _id: '1', title: 'First post' },
-        { _id: '2', title: 'Second post' }
-      ]);
-  }));
+        {
+          _id: '1',
+          title: 'First post',
+          upvoted: [],
+          downvoted: ['username']
+        },
+        {
+          _id: '2',
+          title: 'Second post',
+          upvoted: [],
+          downvoted: []
+        },
+      ])
+  }))
 
   beforeEach(inject(
-    function($controller, $rootScope, $httpBackend, $injector, posts, _Posts_) {
-      httpBackend = $httpBackend;
-      Posts = _Posts_;
-      scope = $rootScope.$new();
+    function($controller, $rootScope, $httpBackend,
+             $injector, posts) {
+      httpBackend = $httpBackend
+      scope = $rootScope.$new()
+      rootScope = $rootScope
       ctrl = $controller('homeCtrl', {
         $scope: scope,
         posts: posts
-      });
-  }));
+      })
+
+      rootScope.user = {
+        _id: '123',
+        username: 'username'
+      }
+  }))
 
   afterEach(function() {
-    httpBackend.verifyNoOutstandingExpectation();
-    httpBackend.verifyNoOutstandingRequest();
-  });
+    httpBackend.verifyNoOutstandingExpectation()
+    httpBackend.verifyNoOutstandingRequest()
+  })
 
   it('should heve 2 posts', function() {
-    expect(scope.posts.length).toBe(2);
-  });
+    expect(scope.posts.length).toBe(2)
+  })
 
   it('should not add new post', function() {
-    scope.newPost = {};
+    scope.newPost = {}
 
-    expect(scope.addPost()).toBe(false);
-    expect(scope.posts.length).toBe(2);
-  });
+    expect(scope.addPost()).toBe(false)
+    expect(scope.posts.length).toBe(2)
+  })
 
   it('should add new post', function() {
-    scope.newPost = { title: 'Third post' };
+    scope.newPost = { title: 'Third post' }
 
     httpBackend.when('POST', '/api/posts', scope.newPost)
-      .respond(scope.newPost);
+      .respond(scope.newPost)
 
-    scope.addPost();
+    scope.addPost()
 
-    httpBackend.flush();
+    httpBackend.flush()
 
-    expect(scope.posts.length).toBe(3);
-    expect(scope.posts[2].title).toEqual('Third post');
-    expect(scope.newPost).toEqual({});
-  });
+    expect(scope.posts.length).toBe(3)
+    expect(scope.posts[2].title).toEqual('Third post')
+    expect(scope.newPost).toEqual({})
+  })
 
   it('should delete post', function() {
-    httpBackend.when('DELETE', '/api/posts/1').respond({});
+    httpBackend.when('DELETE', '/api/posts/1').respond({})
 
-    scope.delete({ _id: '1' });
+    scope.delete(scope.posts[0])
 
-    httpBackend.flush();
+    httpBackend.flush()
 
-    expect(scope.posts.length).toBe(1);
-  });
+    expect(scope.posts.length).toBe(1)
+  })
 
   it('should upvote post', function() {
-    scope.user = {
-      username: 'test'
-    };
+    var post = scope.posts[0],
+        url = '/api/posts/' + post._id + '/vote/1'
 
-    var post = {
-      _id: '123',
-      title: 'test post',
-      upvoted: [],
-      downvoted: ['test']
-    };
+    httpBackend.when('PUT', url).respond(true)
 
-    var url = '/api/posts/' + post._id + '/vote/1';
+    scope.vote(1, post)
 
-    httpBackend.when('PUT', url).respond(post);
+    httpBackend.flush()
 
-    scope.vote(post, 1);
-
-    httpBackend.flush();
-
-    expect(post.upvoted).toEqual(['test']);
-    expect(post.downvoted).toEqual([]);
-  });
-});
+    expect(post.upvoted).toEqual(['username'])
+    expect(post.downvoted).toEqual([])
+  })
+})

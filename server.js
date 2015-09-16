@@ -8,15 +8,15 @@ var express      = require('express'),
     bodyParser   = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session      = require('cookie-session'),
-    configDB     = require('./config/db.js');
+    configDB     = require('./config/db.js')
 
 mongoose
   .connect(configDB[app.settings.env])
   .connection
-    .once('open', function() { console.log('Connected to DB'); })
-    .on('error', function(err) { console.error('MongoErr: ', err); });
+    .once('open', function() { console.log('Connected to DB') })
+    .on('error', function(err) { console.error('MongoErr: ', err) })
 
-require('./config/passport')(passport);
+require('./config/passport')(passport)
 
 app
   .use(bodyParser.urlencoded({ extended: true }))
@@ -32,12 +32,12 @@ app
   .use('/api', require('./api'))
 
   .get('*', function(req, res) {
-    res.sendFile(__dirname + '/public/index.html');
+    res.sendFile(__dirname + '/public/index.html')
   })
 
-  .use(function(err, req, res) {
-    if (err) res.status(500).send(err);
-  });
+  .use(function(err, req, res, next) {
+    if (err) res.status(500).send(err)
+  })
 
-app.listen(port);
-console.log('Server started');
+app.listen(port)
+console.log('Server started')

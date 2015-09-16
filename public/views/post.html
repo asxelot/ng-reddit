@@ -1,12 +1,12 @@
 <h3>{{post.title}}</h3>
-<a href="#" ng-click="downvote(post)">-</a>
+<a href="#" ng-click="vote(-1, post)">-</a>
 {{post.upvotes}}
-<a href="#" ng-click="upvote(post)">+</a>
+<a href="#" ng-click="vote(1, post)">+</a>
 
 <div ng-repeat="comment in post.comments">
-  <a href="#" ng-click="downvote(comment)">-</a>
-  {{comment.upvotes}}
-  <a href="#" ng-click="upvoteComment(comment)">+</a>
+  <a href="#" ng-click="voteComment(-1, comment)">-</a>
+  {{comment.upvoted.length - comment.downvoted.length}}
+  <a href="#" ng-click="voteComment(1, comment)">+</a>
   {{comment.body}}
 </div>
 

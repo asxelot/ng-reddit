@@ -46,7 +46,7 @@ module.exports = function(config) {
 
 
     // enable / disable colors in the output (reporters and logs)
-    colors: false,
+    colors: true,
 
 
     // level of logging
@@ -66,5 +66,5 @@ module.exports = function(config) {
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
     singleRun: false
-  });
-};
+  })
+}

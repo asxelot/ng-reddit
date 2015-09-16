@@ -10,7 +10,7 @@ var app = angular.module('ngReddit', [
         controller: 'homeCtrl',
         resolve: {
           posts: function(_posts) {
-            return _posts.query();
+            return _posts.query()
           }
         }
       })
@@ -19,7 +19,7 @@ var app = angular.module('ngReddit', [
         controller: 'postCtrl',
         resolve: {
           post: function($route, _posts) {
-            return _posts.get({ id: $route.current.params.id });
+            return _posts.get({ id: $route.current.params.id })
           }
         }
       })
@@ -32,16 +32,16 @@ var app = angular.module('ngReddit', [
         controller: 'loginCtrl'
       })
       .otherwise({ redirectTo: '/' })
-    ;
 
-    $locationProvider.html5Mode(true);
+
+    $locationProvider.html5Mode(true)
   })
 
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(function($q, $rootScope) {
       function onError(err) {
-        $rootScope.errors.push(err.data);
-        return $q.reject(err);
+        $rootScope.errors.push(err.data)
+        return $q.reject(err)
       }
 
       return {
@@ -50,4 +50,3 @@ var app = angular.module('ngReddit', [
       }
     })
   })
-;
