@@ -1,0 +1,43 @@
+@import 'clearfix'
+
+$grid-columns: 12
+$grid-gutter: 30px
+$grid-breakpoint: 480px
+
+*, *:before, *:after
+  box-sizing: border-box
+
+@mixin container()
+  margin-left: auto
+  margin-right: auto
+  padding-left: ($grid-gutter / 2)
+  padding-right: ($grid-gutter / 2)
+  max-width: 960px
+  width: 100%
+  @include clearfix
+
+@mixin row()
+  margin-left: ceil($grid-gutter / -2)
+  margin-right: floor($grid-gutter / -2)
+  @include clearfix
+
+@mixin col($n)
+  position: relative
+  min-height: 1px
+  padding-left: ceil($grid-gutter / 2)
+  padding-right: floor($grid-gutter / 2)
+  @media (min-width: $grid-breakpoint)
+    float: left
+    width: percentage($n / $grid-columns)
+
+@mixin offset($n)
+  @media (min-width: $grid-breakpoint)
+    margin-left: percentage($n / $grid-columns)
+
+@mixin push($n)
+  @media (min-width: $grid-breakpoint)
+    left: percentage($n / $grid-columns)
+
+@mixin pull($n)
+  @media (min-width: $grid-breakpoint)
+    right: percentage($n / $grid-columns)

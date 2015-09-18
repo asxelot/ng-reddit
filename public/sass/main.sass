@@ -1,0 +1,58 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,300,400italic,700&subset=latin,cyrillic)
+@import 'normalize'
+@import 'material-palette'
+@import 'depth'
+@import 'responsive'
+
+$aside_w: 300px
+$bg: $light-blue-50
+
+*, *:before, *:after
+  box-sizing: border-box
+  margin: 0
+  padding: 0
+a
+  text-decoration: none
+  &:hover
+    text-decoration: underline
+body
+  font: 16px/1.3 'Roboto', sans-serif
+  background: $bg
+
+%row
+  display: flex
+  flex-flow: row wrap
+%column
+  display: flex
+  flex-flow: column nowrap
+
+main
+  @extend %row
+  justify-content: space-between
+
+.content
+  flex: 1 0 auto
+  width: $tablet - $aside_w
+
+aside
+  margin: 10px
+  padding: 10px
+  width: $aside_w
+  background: white
+  @include depth(1)
+  @include tablet
+    order: -1
+    flex: 1 0 auto
+
+.posts
+  .post
+    padding: 10px
+    margin: 10px
+    background: white
+    @include depth(1)
+    &:last-child
+      margin-bottom: 0
+    .title
+      font-weight: bold
+      font-size: 1.1em
+      color: $blue

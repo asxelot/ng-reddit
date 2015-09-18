@@ -1,6 +1,6 @@
 app
   .factory('_posts', function($resource) {
-    return $resource('/api/posts/:id/:vote')
+    return $resource('/api/posts/:id')
   })
 
   .factory('_comments', function($resource) {
@@ -27,6 +27,8 @@ app
   .factory('_vote', function($http, $rootScope, _remove) {
     return function(n, post, url) {
       $http.put(url).success(function() {
+        if (!$rootScope.user) return
+
         var vote = n > 0 ? 'upvoted' : 'downvoted',
             username = $rootScope.user.username
 

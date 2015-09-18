@@ -1,22 +1,18 @@
-<form name="newPostForm" ng-submit="addPost()" novalidate>
-  <input type="text" name="title" placeholder="Title" ng-model="newPost.title">
-  <input type="text" name="link" placeholder="link" ng-model="newPost.link">
-  <button type="submit">Submit</button>
-</form>
-
-<div ng-repeat="post in posts | orderBy: '-upvotes'">
-  <h4>{{post.title}}</h4>
-  <p>({{post.author}})</p>
-  <a href="#" ng-click="vote(1, post)">-</a>
-  {{post.upvoted.length - post.downvoted.length}}
-  <a href="#" ng-click="vote(1, post)">+</a>
-  <a href="#" ng-show="user.username === post.author" ng-click="delete(post)">delete</a>
-  <a href="/posts/{{post._id}}">
-    <ng-pluralize count="post.comments.length" when="{
-      1: '1 комментарий',
-      few: '{} комментария',
-      many: '{} комментариев'
-    }"></ng-pluralize>
-  </a>
+<div class="posts">
+  <div ng-repeat="post in posts | orderBy: '-upvotes'" class="post">
+    <a href="/posts/{{post._id}}" class="title">{{post.title}}</a>
+    <p>({{post.author}})</p>
+    <a href="#" ng-click="vote(1, post)">-</a>
+    {{post.upvoted.length - post.downvoted.length}}
+    <a href="#" ng-click="vote(1, post)">+</a>
+    <a href="#" ng-show="user.username === post.author" ng-click="delete(post)">delete</a>
+    <a href="/posts/{{post._id}}">
+      <ng-pluralize count="post.comments.length" when="{
+        1: '1 комментарий',
+        few: '{} комментария',
+        many: '{} комментариев'
+      }"></ng-pluralize>
+    </a>
+  </div>
 </div>
 
