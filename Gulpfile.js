@@ -11,7 +11,7 @@ var gulp       = require('gulp'),
 var src = {
   sass: 'public/sass/**/!(_)*.sass',
   html: 'public/**/*.html',
-  js  : 'public/js/**/*!(.min).js'
+  js  : ['public/js/**/*.js', '!public/js/**/*.min.js']
 }
 
 function onError(err) {

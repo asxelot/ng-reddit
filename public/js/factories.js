@@ -1,4 +1,6 @@
-app
+angular
+  .module('ngReddit')
+
   .factory('_posts', function($resource) {
     return $resource('/api/posts/:id')
   })

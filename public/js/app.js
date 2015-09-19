@@ -1,4 +1,4 @@
-var app = angular.module('ngReddit', [
+angular.module('ngReddit', [
     'ngResource',
     'ngRoute'
   ])
@@ -22,6 +22,10 @@ var app = angular.module('ngReddit', [
             return _posts.get({ id: $route.current.params.id })
           }
         }
+      })
+      .when('/submit/:type', {
+        templateUrl: 'views/submit.html',
+        controller: 'submitCtrl'
       })
       .when('/signup', {
         templateUrl: 'views/signup.html',

@@ -1,4 +1,6 @@
-app
+angular
+  .module('ngReddit')
+
   .filter('pluralize', function() {
     // {{post.comments.length + ' комментари(й,я,ев)' | pluralize}}
 

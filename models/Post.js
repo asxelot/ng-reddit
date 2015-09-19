@@ -9,7 +9,7 @@ var PostSchema = new mongoose.Schema({
   author   : String,
   upvoted  : [String],
   downvoted: [String],
-  date     : { type: Date, default: Date.now },
+  published: { type: Date, default: Date.now },
   comments : [{ type: String, ref: 'Comment' }]
 })
 

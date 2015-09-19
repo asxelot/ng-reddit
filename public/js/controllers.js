@@ -1,4 +1,6 @@
-app
+angular
+  .module('ngReddit')
+
   .controller('mainCtrl', function($rootScope, $scope, $http) {
     $rootScope.errors = []
     $http.get('/api/authcheck').success(function(user) {
@@ -67,6 +69,10 @@ app
                 comment._id + '/vote/' + n
       _vote(n, comment, url)
     }
+  })
+
+  .controller('submitCtrl', function($scope, $routeParams) {
+    $scope.type = $routeParams.type
   })
 
   .controller('signupCtrl', function($rootScope, $scope, $http,
