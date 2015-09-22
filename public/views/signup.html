@@ -1,9 +1,46 @@
 <h2>Sign Up</h2>
 
 <form name="signupForm" ng-submit="signup()" novalidate>
-  <input type="text" name="username" ng-model="newUser.username" placeholder="Username">
-  <input type="email" name="email" ng-model="newUser.email" placeholder="Email">
-  <input type="password" name="password" ng-model="newUser.password" placeholder="Password">
-  <input type="password" name="password" ng-model="newUser.confirmPassword" placeholder="Confirm Password">
-  <button type="submit">Sign Up</button>
+  <div>
+    <input
+      type="text"
+      name="username"
+      ng-model="newUser.username"
+      ng-model-options="{ debounce: 500 }"
+      username-validator
+      placeholder="Username"
+      required>
+  </div>
+  <div>
+    <input
+      type="email"
+      name="email"
+      ng-model="newUser.email"
+      ng-model-options="{ debounce: 500 }"
+      email-validator
+      placeholder="Email"
+      required>
+  </div>
+  <div>
+    <input
+      type="password"
+      name="password"
+      ng-model="newUser.password"
+      placeholder="Password"
+      required>
+  </div>
+  <div>
+    <input
+      type="password"
+      name="password"
+      ng-model="newUser.confirmPassword"
+      match-to="newUser.password"
+      placeholder="Confirm Password"
+      required>
+  </div>
+  <button
+    ng-disabled="signupForm.$invalid"
+    type="submit">Sign Up</button>
 </form>
+
+<pre>{{signupForm|json}}</pre>

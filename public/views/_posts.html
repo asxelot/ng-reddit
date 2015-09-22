@@ -1,0 +1,19 @@
+<div class="posts">
+  <div ng-repeat="post in posts || subreddit.posts | orderBy: '-upvotes'" class="post">
+    <a href="/r/{{post.subreddit}}/comments/{{post._id}}" class="title">{{post.title}}</a>
+    <p>({{post.author}})</p>
+    <a href="/r/{{post.subreddit}}">/r/{{post.subreddit}}</a>
+    <a href="#" ng-click="vote(1, post)">-</a>
+    {{post.upvoted.length - post.downvoted.length}}
+    <a href="#" ng-click="vote(1, post)">+</a>
+    <a href="#" ng-show="user.username === post.author" ng-click="delete(post)">delete</a>
+    <a href="/r/{{post.subreddit}}/comments/{{post._id}}">
+      <ng-pluralize count="post.comments.length" when="{
+        1: '1 комментарий',
+        few: '{} комментария',
+        many: '{} комментариев'
+      }"></ng-pluralize>
+    </a>
+  </div>
+</div>
+

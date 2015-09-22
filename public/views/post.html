@@ -1,16 +1,17 @@
-<h3>{{post.title}}</h3>
-<a href="#" ng-click="vote(-1, post)">-</a>
-{{post.upvotes}}
-<a href="#" ng-click="vote(1, post)">+</a>
+<div ng-include="'views/_posts.html'"></div>
 
-<div ng-repeat="comment in post.comments">
-  <a href="#" ng-click="voteComment(-1, comment)">-</a>
-  {{comment.upvoted.length - comment.downvoted.length}}
-  <a href="#" ng-click="voteComment(1, comment)">+</a>
-  {{comment.body}}
-</div>
-
-<form name="newCommentForm" ng-submit="addComment()" novalidate>
-  <textarea name="comment" cols="30" rows="10" ng-model="newComment.body"></textarea>
-  <button type="submit">Submit</button>
+<form name="newCommentForm">
+  <div>
+    <textarea
+      name="body"
+      cols="30"
+      rows="4"
+      ng-model="newComment.body"
+      required></textarea>
+  </div>
+  <button
+    ng-disabled="newCommentForm.$invalid"
+    type="submit">Submit</button>
 </form>
+
+<pre>{{subreddit|json}}</pre>

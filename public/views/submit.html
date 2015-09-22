@@ -1,33 +1,42 @@
 <div class="form-content">
   <form name="newPostForm" ng-submit="addPost()" novalidate>
-    <div>
-      <input
-        type="text"
-        name="title"
-        placeholder="Title"
-        ng-model="newPost.title">
-    </div>
-    <div ng-if="type == 'link'">
-      <input
-        type="url"
-        name="link"
-        placeholder="Link"
-        ng-model="newPost.link">
-    </div>
-    <div ng-if="type == 'text'">
-      <textarea
-        name="text"
-        cols="30"
-        rows="3"
-        placeholder="Text"
-        ng-model="newPost.text"></textarea>
-    </div>
-    <div>
-      <input
-        type="text"
-        name="subr"
-        placeholder="Subreddit"
-        ng-model="newPost.subr">
-    </div>
+  <div>
+    <input
+    type="text"
+    name="title"
+    placeholder="Title"
+    ng-model="newPost.title"
+    required>
+  </div>
+  <div ng-if="type == 'link'">
+    <input
+    type="url"
+    name="link"
+    placeholder="Link"
+    ng-model="newPost.link">
+  </div>
+  <div ng-if="type == 'text'">
+    <textarea
+    name="text"
+    cols="30"
+    rows="3"
+    placeholder="Text"
+    ng-model="newPost.text"></textarea>
+  </div>
+  <div>
+    <input
+    type="text"
+    name="subreddit"
+    placeholder="Subreddit"
+    ng-model="newPost.subreddit"
+    ng-model-options="{ debounce: 500 }"
+    subreddit-validator
+    required>
+  </div>
+  <button
+    ng-disabled="newPostForm.$invalid"
+    type="submit">Submit</button>
   </form>
 </div>
+
+<pre>{{newPostForm|json}}</pre>

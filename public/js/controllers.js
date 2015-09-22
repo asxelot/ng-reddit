@@ -1,8 +1,11 @@
 angular
   .module('ngReddit')
 
-  .controller('mainCtrl', function($rootScope, $scope, $http) {
+  .controller('mainCtrl', function($rootScope, $scope, $http, $location,
+                          _subreddit, _remove) {
     $rootScope.errors = []
+    $rootScope.history = []
+
     $http.get('/api/authcheck').success(function(user) {
       $rootScope.user = user
     })
@@ -12,71 +15,41 @@ angular
         $rootScope.user = null
       })
     }
-  })
-
-  .controller('homeCtrl', function($scope, $http, _posts,
-                          _remove, _vote, posts) {
-    $scope.newPost = {}
-    $scope.posts = posts
-
-    $scope.addPost = function() {
-      if (!$scope.newPost.title) return false
-
-      _posts.save($scope.newPost, function(post) {
-        $scope.posts.push(post)
-        $scope.newPost = {}
-      })
-    }
-
-    $scope.vote = function(n, post) {
-      var url = '/api/posts/' + post._id + '/vote/' + n
-      _vote(n, post, url)
-    }
 
     $scope.delete = function(post) {
-      _posts.delete({ id: post._id }, function() {
-        _remove($scope.posts, post)
+      return _subreddit.delete({
+        subreddit: post.subreddit,
+        comments: 'comments',
+        post: post._id
+      }, function() {
+        _remove(posts, post)
       })
     }
+
+    $rootScope.$on('$routeChangeSuccess', function() {
+      $rootScope.history.push($location.$$path)
+    })
   })
 
-  .controller('postCtrl', function($scope, $http, _comments,
-                          _remove, _vote, post) {
-    $scope.post = post
-    $scope.newComment = {
-      body: '',
-      post: $scope.post._id
-    }
+  .controller('homeCtrl', function($scope, posts) {
+    $scope.posts = posts
+  })
 
-    $scope.addComment = function() {
-      if (!$scope.newComment.body) return
+  .controller('subredditCtrl', function($scope, subreddit) {
+    $scope.subreddit = subreddit
+  })
 
-      _comments.save({
-        postId: post._id,
-      }, $scope.newComment, function(comment) {
-        post.comments.push(comment)
-        $scope.newComment.body = ''
-      })
-    }
-
-    $scope.vote = function(n, post) {
-      var url = '/api/posts/' + post._id + '/vote/' + n
-      _vote(n, post, url)
-    }
-
-    $scope.voteComment = function(n, comment) {
-      var url = '/api/posts/' + post._id + '/comments/' +
-                comment._id + '/vote/' + n
-      _vote(n, comment, url)
-    }
+  .controller('postCtrl', function($scope, subreddit) {
+    $scope.subreddit = subreddit
   })
 
   .controller('submitCtrl', function($scope, $routeParams) {
+    $scope.newPost = {}
     $scope.type = $routeParams.type
   })
 
-  .controller('signupCtrl', function($rootScope, $scope, $http,
-                            $location) {
+  .controller('signupCtrl', function($rootScope, $scope, $http, $location,
+                            _afterLogin) {
     if ($rootScope.user) return $location.path('/')
     $scope.newUser = {}
 
@@ -86,24 +59,18 @@ angular
 
       $http
         .post('/api/signup', $scope.newUser)
-        .success(function(user) {
-          $rootScope.user = user
-          $location.path('/')
-        })
+        .success(_afterLogin)
     }
   })
 
-  .controller('loginCtrl', function($rootScope, $scope, $http,
-                            $location) {
+  .controller('loginCtrl', function($rootScope, $scope, $http, $location,
+                           _afterLogin) {
     if ($rootScope.user) return $location.path('/')
     $scope.loggedUser = {}
 
     $scope.login = function() {
       $http
         .post('/api/login', $scope.loggedUser)
-        .success(function(user) {
-          $rootScope.user = user
-          $location.path('/')
-        })
+        .success(_afterLogin)
     }
   })

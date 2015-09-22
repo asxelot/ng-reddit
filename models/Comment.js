@@ -11,20 +11,15 @@ var CommentSchema = new mongoose.Schema({
   post     : { type: String, ref: 'Post' }
 })
 
-function remove(a, e) {
-  var i = a.indexOf(e)
-  if (i > -1) return a.splice(i, 1)
-}
-
 CommentSchema.methods.vote = function(n, username, cb) {
   var vote = n > 0 ? 'upvoted' : 'downvoted'
 
   if (~this[vote].indexOf(username))
-    remove(this[vote], username)
+    _.pull(this[vote], username)
   else
     this[vote].push(username)
 
-  remove(this[n < 0 ? 'upvoted' : 'downvoted'], username)
+  _.pull(this[n < 0 ? 'upvoted' : 'downvoted'], username)
 
   this.save(cb)
 }

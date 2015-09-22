@@ -1,7 +1,23 @@
 <h2>Log In</h2>
 
 <form name="loginForm" ng-submit="login()" novalidate>
-  <input type="text" name="email" ng-model="loggedUser.email" placeholder="Email">
-  <input type="password" name="password" ng-model="loggedUser.password" placeholder="Password">
-  <button type="submit">Sign Up</button>
+  <div>
+    <input
+      type="text"
+      name="email"
+      ng-model="loggedUser.email"
+      placeholder="Email"
+      required>
+  </div>
+  <div>
+    <input
+      type="password"
+      name="password"
+      ng-model="loggedUser.password"
+      placeholder="Password"
+      required>
+  </div>
+  <button
+  ng-disabled="loginForm.$invalid"
+  type="submit">Sign Up</button>
 </form>

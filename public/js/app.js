@@ -14,12 +14,27 @@ angular.module('ngReddit', [
           }
         }
       })
-      .when('/posts/:id', {
+      .when('/r/:subreddit', {
+        templateUrl: 'views/subreddit.html',
+        controller: 'subredditCtrl',
+        resolve: {
+          subreddit: function($route, _subreddit) {
+            return _subreddit.get({
+              subreddit: $route.current.params.subreddit
+            })
+          }
+        }
+      })
+      .when('/r/:subreddit/comments/:post', {
         templateUrl: 'views/post.html',
         controller: 'postCtrl',
         resolve: {
-          post: function($route, _posts) {
-            return _posts.get({ id: $route.current.params.id })
+          subreddit: function($route, _subreddit) {
+            return _subreddit.get({
+              subreddit: $route.current.params.subreddit,
+              comments: 'comments',
+              post: $route.current.params.post
+            })
           }
         }
       })
@@ -35,15 +50,19 @@ angular.module('ngReddit', [
         templateUrl: 'views/login.html',
         controller: 'loginCtrl'
       })
-      .otherwise({ redirectTo: '/' })
 
 
     $locationProvider.html5Mode(true)
+
+    // $rootScope.$on('$routeChangeSuccess', function() {
+
+    // })
   })
 
   .config(function($httpProvider) {
     $httpProvider.interceptors.push(function($q, $rootScope) {
       function onError(err) {
+        console.error(err)
         $rootScope.errors.push(err.data)
         return $q.reject(err)
       }
