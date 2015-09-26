@@ -23,7 +23,7 @@ angular
   .factory('_afterLogin', function($http, $rootScope, $location) {
     return function(user) {
       $rootScope.user = user
-      $location.path($rootScope.history.slice(-2)[0] || '/')
+      $location.path($rootScope.history[$rootScope.history.length-2] || '/')
     }
   })
 

@@ -6,7 +6,7 @@ angular
     $rootScope.errors = []
     $rootScope.history = []
 
-    $http.get('/api/authcheck').success(function(user) {
+    $http.get('/api/check/auth').success(function(user) {
       $rootScope.user = user
     })
 

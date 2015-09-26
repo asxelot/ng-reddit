@@ -1,11 +1,34 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,300,400italic,700&subset=latin,cyrillic)
 @import 'normalize'
 @import 'material-palette'
+@import 'material-input'
 @import 'depth'
 @import 'responsive'
 
-$aside_w: 300px
+
+// Var
+
+$aside_w: 340px
 $bg: $light-blue-50
+
+
+// Extend
+
+%row
+  display: flex
+  flex-flow: row wrap
+%column
+  display: flex
+  flex-flow: column nowrap
+
+
+// Classes
+
+.hide
+  display: none !important
+
+
+// Global
 
 *, *:before, *:after
   box-sizing: border-box
@@ -15,44 +38,68 @@ a
   text-decoration: none
   &:hover
     text-decoration: underline
+
 body
-  font: 16px/1.3 'Roboto', sans-serif
-  background: $bg
-
-%row
-  display: flex
-  flex-flow: row wrap
-%column
-  display: flex
-  flex-flow: column nowrap
-
-main
   @extend %row
   justify-content: space-between
+  font: 16px/1.3 'Roboto', sans-serif
+  background: $bg
+  @include phone
+    font-size: 14px
 
-.content
+
+// Style
+
+header
+  @extend %row
+  justify-content: space-between
+  width: 100%
+  ul
+    list-style: none
+    li
+      display: inline
+      padding: 0.5em
+  .user
+    padding: 0.5em
+
+main
+  padding: 1em
   flex: 1 0 auto
-  width: $tablet - $aside_w
+  width: 1px
+  @include phone
+    padding: 0
 
 aside
-  margin: 10px
-  padding: 10px
+  padding: 1em 1em 1em 0
   width: $aside_w
+  @include tablet
+    padding: 1em
+    width: 100%
+    flex: 1 0 auto
+  @include phone
+    padding: 0
+
+.content
+  padding: 1em
+  margin-bottom: 1em
   background: white
   @include depth(1)
-  @include tablet
-    order: -1
-    flex: 1 0 auto
+  @include phone
+    margin: 0
 
 .posts
   .post
-    padding: 10px
-    margin: 10px
-    background: white
-    @include depth(1)
-    &:last-child
-      margin-bottom: 0
     .title
       font-weight: bold
       font-size: 1.1em
       color: $blue
+
+form
+  margin-top: 1em
+  & > div
+    position: relative
+
+.form-content
+  width: 500px
+  form > div
+    margin-bottom: 45px

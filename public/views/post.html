@@ -1,17 +1,13 @@
 <div ng-include="'views/_posts.html'"></div>
 
-<form name="newCommentForm">
-  <div>
-    <textarea
-      name="body"
-      cols="30"
-      rows="4"
-      ng-model="newComment.body"
-      required></textarea>
+<div class="content">
+
+  <div class="comments">
+    <div ng-repeat="comment in subreddit.posts[0].comments">
+      <a href="#">{{comment.author}}</a>
+      <p>{{comment.body}}</p>
+    </div>
   </div>
-  <button
-    ng-disabled="newCommentForm.$invalid"
-    type="submit">Submit</button>
-</form>
+</div>
 
 <pre>{{subreddit|json}}</pre>

@@ -77,3 +77,14 @@ angular
       }
     }
   })
+
+  .directive('elasticTextarea', function() {
+    return {
+      restrict: 'A',
+      link: function(scope, el) {
+        el.on('input', function() {
+          el[0].style.height = el[0].scrollHeight + 'px'
+        })
+      }
+    }
+  })

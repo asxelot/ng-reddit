@@ -1,5 +1,5 @@
 <div class="posts">
-  <div ng-repeat="post in posts || subreddit.posts | orderBy: '-upvotes'" class="post">
+  <div ng-repeat="post in posts || subreddit.posts | orderBy: '-upvotes'" class="post content">
     <a href="/r/{{post.subreddit}}/comments/{{post._id}}" class="title">{{post.title}}</a>
     <p>({{post.author}})</p>
     <a href="/r/{{post.subreddit}}">/r/{{post.subreddit}}</a>
