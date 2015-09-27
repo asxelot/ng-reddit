@@ -1,6 +1,7 @@
 var router    = require('express').Router(),
     passport  = require('passport'),
     _         = require('lodash'),
+    validUrl  = require('valid-url'),
     Subreddit = require('./models/Subreddit'),
     Post      = require('./models/Post'),
     Comment   = require('./models/Comment'),
@@ -22,17 +23,14 @@ router
     })
   })
   .param('subreddit', function(req, res, next, name) {
-    Subreddit
-      .findOne({ name: name })
-      // .lean()
-      .exec(function(err, subreddit) {
-        if (!subreddit)
-          return res.status(404).send('Subreddit not found')
-        if (err) return next(err)
+    Subreddit.findOne({ name: name }, function(err, subreddit) {
+      if (!subreddit)
+        return res.status(404).send('Subreddit not found')
+      if (err) return next(err)
 
-        req.subreddit = subreddit
+      req.subreddit = subreddit
       return next()
-      })
+    })
   })
   .param('comment', function(req, res, next, id) {
     Comment.findById(id, function(err, comment) {
@@ -125,6 +123,8 @@ router
       var post = new Post(_.pick(req.body, 'title', 'link'))
 
       if (!post.title) return res.sendStatus(406)
+      if (!validUrl.isUri(req.body.link))
+        return res.status(406).send('URL is invalid')
 
       post.author = req.user.username
       post.subreddit = req.subreddit.name

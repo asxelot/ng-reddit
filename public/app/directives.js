@@ -32,11 +32,16 @@ angular
       })
     }
 
+    function invalidUsername(username) {
+      return /^[a-zA-Z][a-zA-Z0-9]+$/.test(username)
+    }
+
     return {
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, el, attrs, ngModel) {
         ngModel.$asyncValidators.checkUsername = checkUsername
+        ngModel.$validators.invalidUsername = invalidUsername
       }
     }
   })
