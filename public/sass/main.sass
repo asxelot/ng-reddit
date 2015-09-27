@@ -61,27 +61,25 @@ header
     padding: 0.5em
 
 main
-  padding: 1em
   flex: 1 0 auto
-  width: 1px
+  width: 100px
   @include phone
     padding: 0
 
 aside
-  padding: 1em 1em 1em 0
   width: $aside_w
+  margin-left: -1em
   @include tablet
-    padding: 1em
+    margin: 0
     width: 100%
     flex: 1 0 auto
   @include phone
-    padding: 0
   .form-group
     margin-bottom: 0
 
 .content
+  margin: 1em
   padding: 1em
-  margin-bottom: 1em
   background: white
   @include depth(1)
   @include phone
@@ -93,6 +91,8 @@ aside
       font-weight: bold
       font-size: 1.1em
       color: $blue
+    .options
+      font-size: 0.9em
 
 form
   max-width: 500px
@@ -105,6 +105,20 @@ form
 .error
   font-size: 0.9em    
   color: $red
+
+.warn
+  color: $red
+
+.muted
+  padding: 0.3em 0
+  color: $grey
+  font-size: 0.9em
+
+.flat-list
+  list-style: none
+  li
+    display: inline
+    padding-right: 0.5em
 
 div[ng-messages]
   position: absolute

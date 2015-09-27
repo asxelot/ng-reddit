@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/main.min.css">
   <title>ng-reddit</title>
+  <script src="libs/moment/min/moment.min.js"></script>
   <script src="libs/angular/angular.js"></script>
   <script src="libs/angular-locale/angular-locale_ru-ua.js"></script>
   <script src="libs/angular-resource/angular-resource.min.js"></script>
@@ -41,6 +42,9 @@
   </main>
   <aside>
     <div class="content">
+      <a href="/r/{{subreddit.name}}" ng-if="subreddit">
+        {{subreddit.title}}
+      </a>
       <form ng-submit="search()">
         <div class="form-group">
           <input type="search" name="search" ng-model="search">
