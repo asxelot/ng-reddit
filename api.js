@@ -24,7 +24,7 @@ router
   .param('subreddit', function(req, res, next, name) {
     Subreddit
       .findOne({ name: name })
-      .lean()
+      // .lean()
       .exec(function(err, subreddit) {
         if (!subreddit)
           return res.status(404).send('Subreddit not found')
@@ -150,8 +150,10 @@ router
       req.post.populate('comments', function(err, post) {
         if (err) return next(err)
 
-        req.subreddit.posts = [post]
-        res.json(req.subreddit)
+        var subreddit = req.subreddit.toObject()
+
+        subreddit.posts = [post]
+        res.json(subreddit)
       })
     })
     .post(auth, function(req, res, next) {

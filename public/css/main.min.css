@@ -187,7 +187,7 @@ input, textarea {
   input:focus, textarea:focus {
     outline: none;
     box-shadow: 0 2px 0 0 #5677fc; }
-  input.ng-touched.ng-invalid, textarea.ng-touched.ng-invalid {
+  input.ng-dirty.ng-invalid, textarea.ng-dirty.ng-invalid {
     box-shadow: 0 2px 0 0 #e51c23; }
 
 textarea {
@@ -227,7 +227,7 @@ button, .btn {
   -webkit-transition: all 0.3s;
           transition: all 0.3s;
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 2px 2px 0 rgba(0, 0, 0, 0.098), 0 1px 5px 0 rgba(0, 0, 0, 0.084); }
-  button:hover, .btn:hover {
+  button:hover, button:focus, .btn:hover, .btn:focus {
     text-decoration: none;
     cursor: pointer;
     background-color: rgba(158, 158, 158, 0.3);
@@ -277,9 +277,6 @@ body {
           justify-content: space-between;
   font: 16px/1.3 'Roboto', sans-serif;
   background: #e1f5fe; }
-  @media (max-width: 480px) {
-    body {
-      font-size: 14px; } }
 
 header {
   -webkit-box-pack: justify;
@@ -320,6 +317,8 @@ aside {
   @media (max-width: 480px) {
     aside {
       padding: 0; } }
+  aside .form-group {
+    margin-bottom: 0; }
 
 .content {
   padding: 1em;
@@ -336,11 +335,22 @@ aside {
   color: #5677fc; }
 
 form {
-  margin-top: 1em; }
-  form > div {
-    position: relative; }
+  max-width: 500px;
+  width: 100%; }
 
-.form-content {
-  width: 500px; }
-  .form-content form > div {
-    margin-bottom: 45px; }
+.form-group {
+  margin: 1em 0 2em;
+  position: relative;
+  margin-bottom: 45px; }
+
+.error {
+  font-size: 0.9em;
+  color: #e51c23; }
+
+div[ng-messages] {
+  position: absolute;
+  bottom: -1.5em;
+  display: none; }
+
+input.ng-dirty ~ div[ng-messages] {
+  display: block; }

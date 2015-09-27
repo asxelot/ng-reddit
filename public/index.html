@@ -10,6 +10,7 @@
   <script src="libs/angular-locale/angular-locale_ru-ua.js"></script>
   <script src="libs/angular-resource/angular-resource.min.js"></script>
   <script src="libs/angular-route/angular-route.min.js"></script>
+  <script src="libs/angular-messages/angular-messages.min.js"></script>
 
   <script src="app/app.js"></script>
   <script src="app/controllers.js"></script>
@@ -21,14 +22,16 @@
 <body ng-controller="mainCtrl">
   <header>
     <h1><a href="/">ng-reddit</a></h1>
-    <ul ng-hide="user" class="user">
-      <li><a href="/signup">signup</a></li>
-      <li><a href="/login">login</a></li>
-    </ul>
-    <ul ng-show="user" class="user">
-      <li><a id="user" href="#">{{user.username}}</a></li>
-      <li><a id="logout" href="#" ng-click="logout()">logout</a></li>
-    </ul>
+    <div class="auth">
+      <ul ng-hide="user">
+        <li><a href="/signup">signup</a></li>
+        <li><a href="/login">login</a></li>
+      </ul>
+      <ul ng-show="user">
+        <li><a id="user" href="#">{{user.username}}</a></li>
+        <li><a id="logout" href="#" ng-click="logout()">logout</a></li>
+      </ul>
+    </div>
   </header>
   <main>
     <div class="container">
@@ -39,7 +42,7 @@
   <aside>
     <div class="content">
       <form ng-submit="search()">
-        <div>
+        <div class="form-group">
           <input type="search" name="search" ng-model="search">
           <label>Search</label>
         </div>

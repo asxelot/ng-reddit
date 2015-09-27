@@ -1,8 +1,8 @@
 <h2>Sign Up</h2>
 
-<div class="form-content">
-  <form name="signupForm" ng-submit="signup()" novalidate>
-    <div>
+<form name="signupForm" ng-submit="signup()" novalidate>
+  <div class="content">
+    <div class="form-group">
       <input
         type="text"
         name="username"
@@ -11,8 +11,11 @@
         username-validator
         required>
       <label>Username</label>
+      <div ng-messages="signupForm.username.$error" class="error">
+        <div ng-messages-include="error-messages"></div>
+      </div>         
     </div>
-    <div>
+    <div class="form-group">
       <input
         type="email"
         name="email"
@@ -21,28 +24,35 @@
         email-validator
         required>
       <label>Email</label>
+      <div ng-messages="signupForm.email.$error" class="error">
+        <div ng-messages-include="error-messages"></div>
+      </div>        
     </div>
-    <div>
+    <div class="form-group">
       <input
         type="password"
         name="password"
         ng-model="newUser.password"
         required>
       <label>Password</label>
+      <div ng-messages="signupForm.password.$error" class="error">
+        <div ng-messages-include="error-messages"></div>
+      </div>        
     </div>
-    <div>
+    <div class="form-group">
       <input
         type="password"
-        name="password"
+        name="confirmPassword"
         ng-model="newUser.confirmPassword"
         match-to="newUser.password"
         required>
       <label>Confirm Password</label>
+      <div ng-messages="signupForm.confirmPassword.$error" class="error">
+        <div ng-messages-include="error-messages"></div>
+      </div>        
     </div>
-    <button
-      ng-disabled="signupForm.$invalid"
-      type="submit">Sign Up</button>
-  </form>
-</div>
+    <button type="submit">Sign Up</button>
+  </div>
+</form>
 
 <pre>{{signupForm|json}}</pre>

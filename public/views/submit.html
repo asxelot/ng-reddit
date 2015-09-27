@@ -1,42 +1,52 @@
-<div class="form-content content">
-  <form name="newPostForm" ng-submit="addPost()" novalidate>
-    <div>
-      <input
-        type="text"
-        name="title"
-        ng-model="newPost.title"
-        required>
-        <label>Title</label>
+  <form name="newPostForm" ng-submit="submit()" novalidate>
+    <div class="content">
+      <div class="form-group">
+        <input
+          type="text"
+          name="title"
+          ng-model="newPost.title"
+          required>
+          <label>Title</label>
+        <div ng-messages="newPostForm.title.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>
+      </div>
+      <div class="form-group" ng-if="type == 'link'">
+        <input
+          type="url"
+          name="link"
+          ng-model="newPost.link">
+        <label>Link</label>
+        <div ng-messages="newPostForm.link.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>          
+      </div>
+      <div class="form-group" ng-if="type == 'text'">
+        <textarea
+          name="text"
+          rows="1"
+          elastic-textarea
+          ng-model="newPost.text"></textarea>
+        <label>Text</label>
+        <div ng-messages="newPostForm.link.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>        
+      </div>
+      <div class="form-group">
+        <input
+          type="text"
+          name="subreddit"
+          ng-model="newPost.subreddit"
+          ng-model-options="{ debounce: 500 }"
+          subreddit-validator
+          required>
+        <label>Subreddit</label>
+        <div ng-messages="newPostForm.subreddit.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>        
+      </div>
+      <button type="submit">Submit</button>
     </div>
-    <div ng-if="type == 'link'">
-      <input
-        type="url"
-        name="link"
-        ng-model="newPost.link">
-      <label>Link</label>
-    </div>
-    <div ng-if="type == 'text'">
-      <textarea
-        name="text"
-        rows="1"
-        elastic-textarea
-        ng-model="newPost.text"></textarea>
-      <label>Text</label>
-    </div>
-    <div>
-      <input
-        type="text"
-        name="subreddit"
-        ng-model="newPost.subreddit"
-        ng-model-options="{ debounce: 500 }"
-        subreddit-validator
-        required>
-      <label>Subreddit</label>
-    </div>
-    <button
-      ng-disabled="newPostForm.$invalid"
-      type="submit">Submit</button>
   </form>
-</div>
 
 <pre>{{newPostForm|json}}</pre>

@@ -44,8 +44,6 @@ body
   justify-content: space-between
   font: 16px/1.3 'Roboto', sans-serif
   background: $bg
-  @include phone
-    font-size: 14px
 
 
 // Style
@@ -78,6 +76,8 @@ aside
     flex: 1 0 auto
   @include phone
     padding: 0
+  .form-group
+    margin-bottom: 0
 
 .content
   padding: 1em
@@ -95,11 +95,21 @@ aside
       color: $blue
 
 form
-  margin-top: 1em
-  & > div
-    position: relative
+  max-width: 500px
+  width: 100%
+.form-group
+  margin: 1em 0 2em
+  position: relative
+  margin-bottom: 45px
 
-.form-content
-  width: 500px
-  form > div
-    margin-bottom: 45px
+.error
+  font-size: 0.9em    
+  color: $red
+
+div[ng-messages]
+  position: absolute
+  bottom: -1.5em
+  display: none 
+
+input.ng-dirty ~ div[ng-messages]
+  display: block

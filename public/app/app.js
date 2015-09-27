@@ -1,4 +1,5 @@
 angular.module('ngReddit', [
+    'ngMessages',
     'ngResource',
     'ngRoute'
   ])
@@ -53,10 +54,6 @@ angular.module('ngReddit', [
 
 
     $locationProvider.html5Mode(true)
-
-    // $rootScope.$on('$routeChangeSuccess', function() {
-
-    // })
   })
 
   .config(function($httpProvider) {
@@ -71,5 +68,11 @@ angular.module('ngReddit', [
         requestError: onError,
         responseError: onError
       }
+    })
+  })
+
+  .run(function($templateCache, $http) {
+    $http.get('views/_error-messages.html').success(function(html) {
+      $templateCache.put('error-messages', html)
     })
   })

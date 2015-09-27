@@ -11,8 +11,7 @@ var gulp       = require('gulp'),
     livereload = require('gulp-livereload')
 
 var src = {
-  sass: 'public/sass/main.sass',
-  _sass: 'public/sass/_*.sass',
+  sass: 'public/sass/*.sass',
   html: 'public/**/*.html',
   js  : 'public/app/*.js'
 }
@@ -23,7 +22,7 @@ function onError(err) {
 }
 
 gulp.task('sass', function() {
-  gulp.src(src.sass)
+  gulp.src('public/sass/main.sass')
       .pipe(sass({
         includePaths: ['public/sass']
       }).on('error', onError))

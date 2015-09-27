@@ -16,7 +16,7 @@ angular
       })
     }
 
-    $scope.delete = function(post) {
+    $scope.delete = function(posts, post) {
       return _subreddit.delete({
         subreddit: post.subreddit,
         comments: 'comments',
@@ -43,19 +43,31 @@ angular
     $scope.subreddit = subreddit
   })
 
-  .controller('submitCtrl', function($scope, $routeParams) {
+  .controller('submitCtrl', function($scope, $routeParams, $location, 
+                            _subreddit, _setDirty) {
     $scope.newPost = {}
     $scope.type = $routeParams.type
+
+    $scope.submit = function() {
+      if ($scope.newPostForm.$invalid)
+        return _setDirty($scope.newPostForm)
+
+      _subreddit.save({ 
+        subreddit: $scope.newPost.subreddit 
+      }, $scope.newPost, function(post) {
+        $location.path('/r/' + post.subreddit + '/comments/' + post._id)
+      })
+    }
   })
 
   .controller('signupCtrl', function($rootScope, $scope, $http, $location,
-                            _afterLogin) {
+                            _afterLogin, _setDirty) {
     if ($rootScope.user) return $location.path('/')
     $scope.newUser = {}
 
     $scope.signup = function() {
-      if ($scope.newUser.password !== $scope.newUser.confirmPassword)
-        return false
+      if ($scope.signupForm.$invalid) 
+        return _setDirty($scope.signupForm)
 
       $http
         .post('/api/signup', $scope.newUser)
@@ -64,11 +76,14 @@ angular
   })
 
   .controller('loginCtrl', function($rootScope, $scope, $http, $location,
-                           _afterLogin) {
+                           _afterLogin, _setDirty) {
     if ($rootScope.user) return $location.path('/')
     $scope.loggedUser = {}
 
     $scope.login = function() {
+      if ($scope.loginForm.$invalid)
+        return _setDirty($scope.loginForm)
+
       $http
         .post('/api/login', $scope.loggedUser)
         .success(_afterLogin)

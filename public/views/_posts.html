@@ -6,7 +6,7 @@
     <a href="#" ng-click="vote(1, post)">-</a>
     {{post.upvoted.length - post.downvoted.length}}
     <a href="#" ng-click="vote(1, post)">+</a>
-    <a href="#" ng-show="user.username === post.author" ng-click="delete(post)">delete</a>
+    <a href="#" ng-show="user.username === post.author" ng-click="delete(posts, post)">delete</a>
     <a href="/r/{{post.subreddit}}/comments/{{post._id}}">
       <ng-pluralize count="post.comments.length" when="{
         1: '1 комментарий',
