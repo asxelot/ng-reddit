@@ -37,7 +37,7 @@ angular
   .factory('_vote', function($http, $rootScope, _remove) {
     return function(n, post, url) {
       $http.put(url).success(function() {
-        if (!$rootScope.user) return
+        if (!$rootScope.user) return false
 
         var vote = n > 0 ? 'upvoted' : 'downvoted',
             username = $rootScope.user.username

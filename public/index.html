@@ -60,5 +60,19 @@
   <div ng-repeat="error in errors track by $index">
     <div class="error">{{error}}</div>
   </div>
+
+  <script type="text/ng-template" id="error-messages">
+    <p ng-message="required">This field required</p>
+    <p ng-message="minlength">Too short</p>
+    <p ng-message="maxlength">Too long</p>
+    <p ng-message="pattern">Please use only letters and numbers</p>
+    <p ng-message="invalidUsername">Must start from letter and contains only letters and numbers</p>
+    <p ng-message="url">Invalid URL</p>
+    <p ng-message="email">Invalid email</p>
+    <p ng-message="matchPassword">Password dont match</p>
+    <p ng-message="checkSubreddit">This Subreddit not found</p>
+    <p ng-message="checkUsername">This username already taken</p>
+    <p ng-message="checkEmail">This email already taken</p>
+  </script>
 </body>
 </html>

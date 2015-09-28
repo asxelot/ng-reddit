@@ -70,9 +70,3 @@ angular.module('ngReddit', [
       }
     })
   })
-
-  .run(function($templateCache, $http) {
-    $http.get('views/_error-messages.html').success(function(html) {
-      $templateCache.put('error-messages', html)
-    })
-  })

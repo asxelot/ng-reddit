@@ -15,11 +15,14 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'public/libs/angular/angular.min.js',
+      'public/libs/angular/angular.js',
       'public/libs/angular-resource/angular-resource.min.js',
+      'public/libs/angular-messages/angular-messages.min.js',
       'public/libs/angular-route/angular-route.min.js',
+      'public/libs/moment/min/moment.min.js',
       'node_modules/angular-mocks/angular-mocks.js',
-      'public/js/*.js',
+      'public/app/*.js',
+      'public/views/*.html',
       'test/unit/*.spec.js'
     ],
 
@@ -32,13 +35,18 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'public/views/*.html': 'ng-html2js'
     },
 
+    ngHtml2JsPreprocessor: {
+        stripPrefix: 'public/',
+        moduleName: 'templates'
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'beep'],
+    reporters: ['dots', 'beep'],
 
 
     // web server port
@@ -51,7 +59,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_ERROR,
 
 
     // enable / disable watching file and executing tests whenever any file changes
