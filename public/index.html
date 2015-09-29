@@ -42,9 +42,6 @@
   </main>
   <aside>
     <div class="content">
-      <a href="/r/{{subreddit.name}}" ng-if="subreddit">
-        {{subreddit.title}}
-      </a>
       <form ng-submit="search()">
         <div class="form-group">
           <input type="search" name="search" ng-model="search">
@@ -54,6 +51,23 @@
       </form>
       <a href="/submit/link" class="btn wide">Submit a new link</a>
       <a href="/submit/text" class="btn wide">Submit a new text post</a>
+      <div ng-if="subreddit">
+        <p>
+          <a href="/r/{{subreddit.name}}" class="title">
+            {{subreddit.title}}
+          </a>
+        </p>
+        <p>{{subreddit.description}}</p>
+        <hr>
+        <p>
+          MODERATORS
+          <ul class="moderators">
+            <li ng-repeat="moderator in subreddit.moderators">
+              <a href="/r/{{moderator}}">{{moderator}}</a>
+            </li>
+          </ul>
+        </p>
+      </div>
     </div>
   </aside>
 

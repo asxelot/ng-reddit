@@ -26,21 +26,41 @@ angular
       })
     }
 
+    $scope.vote = function(n, post) {
+      if (!$rootScope.user) return false
+
+      var url = '/api/' + 
+                (post.comments ? 'posts/' : 'comments/') +
+                post._id + '/vote/' + n
+
+      $http.put(url).success(function() {
+        var vote = n > 0 ? 'upvotes' : 'downvotes',
+            username = $rootScope.user.username
+
+        if (~post[vote].indexOf(username))
+          _remove(post[vote], username)
+        else
+          post[vote].push(username)
+        _remove(post[n < 0 ? 'upvotes' : 'downvotes'], username)
+      })
+    }
+
     $rootScope.$on('$routeChangeSuccess', function() {
       $rootScope.history.push($location.$$path)
     })
   })
 
-  .controller('homeCtrl', function($scope, posts) {
+  .controller('homeCtrl', function($scope, $rootScope, posts) {
     $scope.posts = posts
+    $rootScope.subreddit = null
   })
 
-  .controller('subredditCtrl', function($scope, subreddit) {
-    $scope.subreddit = subreddit
+  .controller('subredditCtrl', function($rootScope, subreddit) {
+    $rootScope.subreddit = subreddit
   })
 
-  .controller('postCtrl', function($scope, subreddit) {
-    $scope.subreddit = subreddit
+  .controller('postCtrl', function($rootScope, subreddit) {
+    $rootScope.subreddit = subreddit
   })
 
   .controller('submitCtrl', function($scope, $routeParams, $location, 

@@ -3,6 +3,7 @@ var gulp       = require('gulp'),
     cssmin     = require('gulp-cssmin'),
     ngAnnotate = require('gulp-ng-annotate'),
     sourcemaps = require('gulp-sourcemaps'),
+    sprity     = require('sprity'),
     uglify     = require('gulp-uglify'),
     concat     = require('gulp-concat'),
     rename     = require('gulp-rename'),
@@ -34,7 +35,7 @@ gulp.task('sass', function() {
 })
 
 gulp.task('html', function() {
-  gulp.src(src.html)
+  gulp.src('public/index.html')
       .pipe(livereload())
 })
 
@@ -57,10 +58,17 @@ gulp.task('js', function() {
       .pipe(livereload())
 })
 
+gulp.task('sprite', function() {
+  return sprity.src({
+    src: 'public/images/*.png',
+    style: 'public/sass/_sprite.sass',
+    processor: 'sass'
+  }).pipe(gulp.dest('public/css'))
+})
+
 gulp.task('default', function() {
   livereload.listen()
   gulp.watch(src.sass, ['sass'])
-  gulp.watch(src._sass, ['sass'])
   gulp.watch(src.html, ['html'])
   gulp.watch(src.js, ['js'])
 })

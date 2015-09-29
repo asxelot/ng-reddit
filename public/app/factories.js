@@ -33,20 +33,3 @@ angular
         if (/^[^$]/.test(k)) form[k].$setDirty()      
     }
   })
-
-  .factory('_vote', function($http, $rootScope, _remove) {
-    return function(n, post, url) {
-      $http.put(url).success(function() {
-        if (!$rootScope.user) return false
-
-        var vote = n > 0 ? 'upvoted' : 'downvoted',
-            username = $rootScope.user.username
-
-        if (~post[vote].indexOf(username))
-          _remove(post[vote], username)
-        else
-          post[vote].push(username)
-        _remove(post[n < 0 ? 'upvoted' : 'downvoted'], username)
-      })
-    }
-  })

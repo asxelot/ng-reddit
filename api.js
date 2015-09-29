@@ -91,6 +91,7 @@ router
         return res.sendStatus(406)
 
       subreddit.creator = req.user.username
+      subreddit.moderators.push(req.user.username)
       subreddit.save(function(err, subr) {
         if (err) return next(err)
 
@@ -128,7 +129,7 @@ router
 
       post.author = req.user.username
       post.subreddit = req.subreddit.name
-      post.upvoted.push(req.user.username)
+      post.upvotes.push(req.user.username)
 
       post.save(function(err, post) {
         if (err) return next(err)
@@ -210,7 +211,7 @@ router
       if (Math.abs(req.params.vote) != 1)
         return res.sendStatus(406)
 
-      req.post.vote(+req.params.vote, req.user.username, function(err, post) {
+      req.post.vote(+req.params.vote, req.user.username, function(err) {
         if (err) return next(err)
 
         res.sendStatus(200)
