@@ -5,7 +5,7 @@ describe('signup page', function() {
       password = element(by.model('newUser.password')),
       confirmPassword = element(by.model('newUser.confirmPassword')),
       submit = $('button[type="submit"]'),
-      errors = element.all(by.repeater('error in errors'))
+      errors = element.all(by.repeater('error in errors track by $index'))
 
   function signUp(name, mail, pass) {
     username.sendKeys(name)
@@ -17,19 +17,5 @@ describe('signup page', function() {
 
   beforeEach(function() {
     browser.get(url)
-  })
-
-  it('should show error "That username is already taken"', function() {
-    signUp('foo', 'fasdifjoasd@fjsaldfjl.com', '1234')
-
-    expect(errors.last().getText())
-      .toBe("That username is already taken")
-  })
-
-  it('should show error "That email is already taken"', function() {
-    signUp('fffuuu', 'foo@bar.com', '1234')
-
-    expect(errors.last().getText())
-      .toBe("That email is already taken")
   })
 })

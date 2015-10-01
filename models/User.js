@@ -5,6 +5,7 @@ var mongoose = require('mongoose'),
 var UserSchema = mongoose.Schema({
   _id: { type: String, unique: true, default: shortid.generate },
   username: String,
+  moderate: [String],
   local: {
     email: String,
     password: String

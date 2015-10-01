@@ -205,8 +205,8 @@ label {
   -webkit-transition: 0.2s ease all;
           transition: 0.2s ease all; }
 
-input:focus ~ label, input.ng-dirty ~ label,
-textarea:focus ~ label, textarea.ng-dirty ~ label {
+input:focus ~ label, input.ng-not-empty ~ label,
+textarea:focus ~ label, textarea.ng-not-empty ~ label {
   top: -20px;
   font-size: 12px;
   color: #5677fc; }

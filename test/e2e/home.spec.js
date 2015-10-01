@@ -10,15 +10,5 @@ describe('home page', function() {
     browser.get(url)
   })
 
-  it('should not post before login', function() {
-    posts.count().then(function(count) {
-      title.sendKeys('Test post')
-      link.sendKeys('Link')
-      submit.click()
 
-      posts.count().then(function(n) {
-        expect(count).toBe(n)
-      })
-    })
-  })
 })

@@ -93,3 +93,19 @@ angular
       }
     }
   })
+
+  .directive('input', inputDirective)
+
+  .directive('textarea', inputDirective)
+
+
+function inputDirective() {
+  return {
+    restrict: 'E',
+    link: function(scope, el, attrs) {
+      scope.$watch(attrs.ngModel, function(val) {
+        el[val?'addClass':'removeClass']('ng-not-empty')
+      })
+    }
+  }  
+}

@@ -29,7 +29,7 @@
           </a>
         </li>
         <li>
-          <a href="#" ng-show="user.username === post.author" ng-click="delete(posts, post)" class="warn">delete</a>
+          <a href="#" ng-show="user.username === post.author || user.moderate.indexOf(post.subreddit) > -1" ng-click="delete(posts || subreddit.posts, post)" class="warn">delete</a>
         </li>
       </ul>
     </div>
@@ -37,3 +37,6 @@
   </div>
 </div>
 
+<div ng-if="!subreddit.posts.length">
+  Not yet any posts
+</div>

@@ -92,10 +92,12 @@ router
 
       subreddit.creator = req.user.username
       subreddit.moderators.push(req.user.username)
+      req.user.moderate.push(req.body.name)
       subreddit.save(function(err, subr) {
         if (err) return next(err)
-
-        res.json(subr)
+        req.user.save(function(err, user) {
+          res.json(subr)
+        })
       })
     })
 
@@ -124,7 +126,7 @@ router
       var post = new Post(_.pick(req.body, 'title', 'link'))
 
       if (!post.title) return res.sendStatus(406)
-      if (!validUrl.isUri(req.body.link))
+      if (req.body.link && !validUrl.isUri(req.body.link))
         return res.status(406).send('URL is invalid')
 
       post.author = req.user.username
@@ -177,8 +179,12 @@ router
       // change post
     })
     .delete(auth, function(req, res) {
-      if (req.user.username !== req.post.author)
+      if (
+        req.user.username !== req.post.author &&
+        !~req.subreddit.moderators.indexOf(req.user.username)
+      ) {
         return res.sendStatus(401)
+      }
 
       req.post.remove(function(err) {
         if (err) return next(err)

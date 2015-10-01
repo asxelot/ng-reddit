@@ -65,7 +65,9 @@ angular
 
   .controller('submitCtrl', function($scope, $routeParams, $location, 
                             _subreddit, _setDirty) {
-    $scope.newPost = {}
+    if ($scope.subreddit) 
+      $scope.newPost.subreddit = $scope.subreddit.name
+      
     $scope.type = $routeParams.type
 
     $scope.submit = function() {
