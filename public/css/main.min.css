@@ -309,8 +309,6 @@ main {
 aside {
   width: 340px;
   margin-left: -1em; }
-  aside p {
-    padding: 0.5em 0; }
   @media (max-width: 768px) {
     aside {
       margin: 0;
@@ -321,6 +319,8 @@ aside {
               flex: 1 0 auto; } }
   aside .form-group {
     margin-bottom: 0; }
+  aside p {
+    padding: 0.5em 0; }
 
 .content {
   margin: 1em;

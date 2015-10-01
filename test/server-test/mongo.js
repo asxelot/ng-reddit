@@ -1,4 +1,4 @@
-var configDB = require('../../config/db.js'),
+var configDB = require('../../config/db'),
     mongoose = require('mongoose'),
     expect = require('chai').expect,
     clearDB = require('mocha-mongoose')(configDB.test, {noClear: true}),
@@ -13,7 +13,7 @@ describe('Example spec for a Post model', function() {
   before(function(done) {
     if (mongoose.connection.db) return done()
 
-    mongoose.connect(config.db.test, done)
+    mongoose.connect(configDB.test, done)
   })
 
   before(function(done) {
@@ -22,6 +22,14 @@ describe('Example spec for a Post model', function() {
 
   it('should be saved', function(done) {
     new Post({ title: 'Test post' }).save(done)
+  })
+
+  it('should return promise', function(done) {
+    new Post({ title: 'Test Promise' })
+      .save()
+      .then(function() {
+        done()
+      })
   })
 
   it('should save another', function(done) {
@@ -35,10 +43,20 @@ describe('Example spec for a Post model', function() {
   it('should be listed', function(done) {
     Post.find(function(err, posts) {
       expect(err).to.not.exist
-      expect(posts).to.have.length(2)
+      expect(posts).to.have.length(3)
 
       done()
     })
+  })
+
+  it('should upvote post', function(done) {
+    Post
+      .findById(postId)
+      .then(post => post.vote('1', 'foo'))
+      .then(function(post) {
+        expect(post.upvotes).to.include('foo')
+        done()
+      })
   })
 
   it('should add a comment', function(done) {
@@ -58,30 +76,6 @@ describe('Example spec for a Post model', function() {
           expect(post.comments).to.have.length(1)
           done()
         })
-      })
-    })
-  })
-
-  it('should upvote post', function(done) {
-    Post.findById(postId, function(err, post) {
-      expect(err).to.not.exist
-
-      post.upvote(function(err, post) {
-        expect(err).to.not.exist
-        expect(post.upvotes).to.equal(1)
-        done()
-      })
-    })
-  })
-
-  it('should upvote comment', function(done) {
-    Comment.findById(commentId, function(err, comment) {
-      expect(err).to.not.exist
-
-      comment.upvote(function(err, comment) {
-        expect(err).to.not.exist
-        expect(comment.upvotes).to.equal(1)
-        done()
       })
     })
   })

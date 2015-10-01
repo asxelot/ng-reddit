@@ -10,6 +10,8 @@ var express      = require('express'),
     session      = require('cookie-session'),
     configDB     = require('./config/db.js')
 
+mongoose.Promise = global.Promise
+
 mongoose
   .connect(configDB[app.settings.env])
   .connection

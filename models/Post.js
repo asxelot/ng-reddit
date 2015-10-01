@@ -19,7 +19,7 @@ function remove(a, e) {
   if (i > -1) return a.splice(i, 1)  
 }
 
-PostSchema.methods.vote = function(n, username, cb) {
+PostSchema.methods.vote = function(n, username) {
   var vote = n > 0 ? 'upvotes' : 'downvotes'
 
   if (~this[vote].indexOf(username))
@@ -29,7 +29,7 @@ PostSchema.methods.vote = function(n, username, cb) {
 
   remove(this[n < 0 ? 'upvotes' : 'downvotes'], username)
 
-  this.save(cb)
+  return this.save()
 }
 
 module.exports = mongoose.model('Post', PostSchema)

@@ -14,56 +14,71 @@ function auth(req, res, next) {
 
 router
   .param('post', function(req, res, next, id) {
-    Post.findById(id, function(err, post) {
-      if (!post) return res.status(404).send('Post not found!')
-      if (err) return next(err)
+    Post
+      .findById(id)
+      .then(function(post) {
+        if (!post) return res.status(404).send('Post not found!')
 
-      req.post = post
-      return next()
-    })
+        req.post = post
+        return next()
+      })
+      .catch(next)
   })
   .param('subreddit', function(req, res, next, name) {
-    Subreddit.findOne({ name: name }, function(err, subreddit) {
-      if (!subreddit)
-        return res.status(404).send('Subreddit not found')
-      if (err) return next(err)
+    Subreddit
+      .findOne({ name: name })
+      .then(function(subreddit) {
+        if (!subreddit)
+          return res.status(404).send('Subreddit not found')
 
-      req.subreddit = subreddit
-      return next()
-    })
+        req.subreddit = subreddit
+        return next()
+      })
+      .catch(next)
   })
   .param('comment', function(req, res, next, id) {
-    Comment.findById(id, function(err, comment) {
-      if (!comment) return res.status(404).send('Comment not found!')
-      if (err) return next(err)
+    Comment
+      .findById(id)
+      .then(function(comment) {
+        if (!comment) return res.status(404).send('Comment not found!')
 
-      req.comment = comment
-      return next()
-    })
+        req.comment = comment
+        return next()
+      })
+      .catch(next)
   })
 
 router
   .route('/check/r/:subr')
     .get(function(req, res, next) {
-      Subreddit.findOne({ name: req.params.subr }, function(err, subreddit) {
-        res.json(!!subreddit)
-      })
+      Subreddit
+        .findOne({ name: req.params.subr })
+        .then(function(subreddit) {
+          res.json(!!subreddit)
+        })
+        .catch(next)
     })
 
 router
   .route('/check/u/:username')
     .get(function(req, res, next) {
-      User.findOne({ username: req.params.username }, function(err, user) {
-        res.json(!!user)
-      })
+      User
+        .findOne({ username: req.params.username })
+        .then(function(user) {
+          res.json(!!user)
+        })
+        .catch(next)
     })
 
 router
   .route('/check/email/:email')
     .get(function(req, res, next) {
-      User.findOne({ 'local.email': req.params.email }, function(err, user) {
-        res.json(!!user)
-      })
+      User
+        .findOne({ 'local.email': req.params.email })
+        .then(function(user) {
+          res.json(!!user)
+        })
+        .catch(next)
     })
 
 router
@@ -77,11 +92,12 @@ router
 router
   .route('/r')
     .get(function(req, res, next) {
-      Subreddit.find(function(err, subreddits) {
-        if (err) return next(err)
-
-        res.json(subreddits)
-      })
+      Subreddit
+        .find()
+        .then(function(subreddits) {
+          res.json(subreddits)
+        })
+        .catch(next)
     })
     .post(auth, function(req, res, next) {
       var subreddit = new Subreddit(_.pick(req.body, 'name',
@@ -93,12 +109,13 @@ router
       subreddit.creator = req.user.username
       subreddit.moderators.push(req.user.username)
       req.user.moderate.push(req.body.name)
-      subreddit.save(function(err, subr) {
-        if (err) return next(err)
-        req.user.save(function(err, user) {
-          res.json(subr)
+
+      Promise
+        .all([subreddit.save(), req.user.save()])
+        .then(function(arr) {
+          res.json(arr[0])
         })
-      })
+        .catch(next)
     })
 
 
@@ -109,18 +126,19 @@ router
 router
   .route('/r/:subreddit')
     .get(function(req, res, next) {
-      Subreddit.populate(req.subreddit, {
-        path: 'posts',
-        options: {
-          sort: { published: -1 },
-          skip: (req.query.page - 1 || 0) * 20,
-          limit: 20
-        }
-      }, function(err, subreddit) {
-        if (err) return next(err)
-
-        res.json(subreddit)
-      })
+      Subreddit
+        .populate(req.subreddit, {
+          path: 'posts',
+          options: {
+            sort: { published: -1 },
+            skip: (req.query.page - 1 || 0) * 20,
+            limit: 20
+          }
+        }, function(err, subreddit) {
+          if (err) return next(err)
+          
+          res.json(subreddit)
+        })
     })
     .post(auth, function(req, res, next) {
       var post = new Post(_.pick(req.body, 'title', 'link'))
@@ -132,17 +150,15 @@ router
       post.author = req.user.username
       post.subreddit = req.subreddit.name
       post.upvotes.push(req.user.username)
+      req.subreddit.posts.push(post)
+      req.user.posts.push(post)
 
-      post.save(function(err, post) {
-        if (err) return next(err)
-
-        req.subreddit.posts.push(post)
-        req.subreddit.save(function(err) {
-          if (err) return next(err)
-
-          res.json(post)
+      Promise
+        .all([post.save(), req.subreddit.save(), req.user.save()])
+        .then(function(arr) {
+          res.json(arr[0])
         })
-      })
+        .catch(next)
     })
 
 // /r/:subreddit/comments/:post
@@ -150,35 +166,34 @@ router
 router
   .route('/r/:subreddit/comments/:post')
     .get(function(req, res, next) {
-      req.post.populate('comments', function(err, post) {
-        if (err) return next(err)
+      req.post
+        .populate('comments', function(err, post) {
+          if (err) return next(err)
+          
+          var subreddit = req.subreddit.toObject()
 
-        var subreddit = req.subreddit.toObject()
-
-        subreddit.posts = [post]
-        res.json(subreddit)
-      })
+          subreddit.posts = [post]
+          res.json(subreddit)
+        })
     })
     .post(auth, function(req, res, next) {
       var comment = new Comment(_.pick(req.body, 'body'))
       comment.post = req.post
       comment.author = req.user.username
+      req.post.comments.push(comment)
+      req.user.comments.push(comment)
 
-      comment.save(function(err, comment) {
-        if (err) return next(err)
-
-        req.post.comments.push(comment)
-        req.post.save(function(err, post) {
-          if (err) return next(err)
-
-          res.json(comment)
+      Promise
+        .all([comment.save(), req.post.save(), req.user.save()])
+        .then(function(arr) {
+          res.json(arr[0])
         })
-      })
+        .catch(next)
     })
     .put(auth, function(req, res, next) {
       // change post
     })
-    .delete(auth, function(req, res) {
+    .delete(auth, function(req, res, next) {
       if (
         req.user.username !== req.post.author &&
         !~req.subreddit.moderators.indexOf(req.user.username)
@@ -186,11 +201,12 @@ router
         return res.sendStatus(401)
       }
 
-      req.post.remove(function(err) {
-        if (err) return next(err)
-
-        res.sendStatus(200)
-      })
+      req.post
+        .remove()
+        .then(function() {
+          res.sendStatus(200)
+        })
+        .catch(next)
     })
 
 // /posts
@@ -203,11 +219,10 @@ router
         .sort('-published')
         .skip((req.query.page - 1) * 20)
         .limit(20)
-        .exec(function(err, posts) {
-          if (err) return next(err)
-
+        .then(function(posts) {
           res.json(posts)
         })
+        .catch(next)
     })
 
 
@@ -217,11 +232,12 @@ router
       if (Math.abs(req.params.vote) != 1)
         return res.sendStatus(406)
 
-      req.post.vote(+req.params.vote, req.user.username, function(err) {
-        if (err) return next(err)
-
-        res.sendStatus(200)
-      })
+      var promise = req.post
+        .vote(+req.params.vote, req.user.username)
+        .then(function() {
+          res.sendStatus(200)
+        })
+        .catch(next)
     })
 
 // Comments
@@ -238,12 +254,12 @@ router
       if (Math.abs(req.params.vote) !== 1)
         return res.sendStatus(406)
 
-      req.comment.vote(+req.params.vote, req.user.username,
-        function(err, comment) {
-          if (err) return next(err)
-
+      req.comment
+        .vote(+req.params.vote, req.user.username)
+        .then(function(comment) {
           res.sendStatus(200)
         })
+        .catch(next)
     })
 
 
