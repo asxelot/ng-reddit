@@ -5,43 +5,41 @@ var configDB = require('../../config/db'),
     Post = require('../../models/Post'),
     Comment = require('../../models/Comment')
 
+mongoose.Promise = global.Promise
+
 process.env.NODE_ENV = 'test'
 
-describe('Example spec for a Post model', function() {
+describe('Post model', function() {
   var postId, commentId
 
-  before(function(done) {
+  before(done => {
     if (mongoose.connection.db) return done()
 
     mongoose.connect(configDB.test, done)
   })
 
-  before(function(done) {
-    clearDB(done)
-  })
+  before(done => clearDB(done) )
 
-  it('should be saved', function(done) {
+  it('should be saved', done => {
     new Post({ title: 'Test post' }).save(done)
   })
 
-  it('should return promise', function(done) {
+  it('should return promise', done => {
     new Post({ title: 'Test Promise' })
       .save()
-      .then(function() {
-        done()
-      })
+      .then(() => done())
   })
 
-  it('should save another', function(done) {
-    new Post({ title: 'Test post' }).save(function(err, post) {
+  it('should save another', done => {
+    new Post({ title: 'Test post' }).save((err, post) => {
       expect(err).to.not.exist
       postId = post._id
       done()
     })
   })
 
-  it('should be listed', function(done) {
-    Post.find(function(err, posts) {
+  it('should be listed', done => {
+    Post.find((err, posts) => {
       expect(err).to.not.exist
       expect(posts).to.have.length(3)
 
@@ -49,34 +47,48 @@ describe('Example spec for a Post model', function() {
     })
   })
 
-  it('should upvote post', function(done) {
+  it('should upvote post', done => {
     Post
       .findById(postId)
       .then(post => post.vote('1', 'foo'))
-      .then(function(post) {
+      .then(post => {
         expect(post.upvotes).to.include('foo')
         done()
       })
   })
 
-  it('should add a comment', function(done) {
-    Post.findById(postId, function(err, post) {
-      expect(err).to.not.exist
-
-      var comment = new Comment({ body: 'test comment' })
-
-      comment.save(function(err, comment) {
-        expect(err).to.not.exist
-
-        commentId = comment._id
-
-        post.comments.push(comment)
-        post.save(function(err, post) {
-          expect(err).to.not.exists
-          expect(post.comments).to.have.length(1)
-          done()
-        })
+  it('should downvote post', done => {
+    Post
+      .findById(postId)
+      .then(post => post.vote('-1', 'foo'))
+      .then(post => {
+        expect(post.downvotes).to.include('foo')
+        expect(post.upvotes).to.not.include('foo')
+        done()
       })
-    })
+  })
+ 
+  it('should add a comment', done => {
+    Post
+      .findById(postId)
+      .then(post => {
+        var comment = new Comment({ body: 'test comment' })
+        post.comments.push(comment)
+        return Promise.all([post.save(), comment.save()])
+      })
+      .then(data => {
+        expect(data[0].comments).to.have.length(1)
+        done()
+      })
+  })
+
+  it('populate should return promise', done => {
+    Post
+      .findById(postId)
+      .then(post => post.populate('comments'))
+      .then(post => {
+        done()
+      })
+      .catch(console.error)
   })
 })

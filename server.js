@@ -10,13 +10,13 @@ var express      = require('express'),
     session      = require('cookie-session'),
     configDB     = require('./config/db.js')
 
-mongoose.Promise = global.Promise
+mongoose.Promise = Promise
 
 mongoose
   .connect(configDB[app.settings.env])
   .connection
-    .once('open', function() { console.log('Connected to DB') })
-    .on('error', function(err) { console.error('MongoErr: ', err) })
+    .once('open', () => console.log('Connected to DB'))
+    .on('error', err => console.error('MongoErr: ', err))
 
 require('./config/passport')(passport)
 
@@ -33,11 +33,11 @@ app
   .use(express.static('public'))
   .use('/api', require('./api'))
 
-  .get('*', function(req, res) {
+  .get('*', (req, res) => {
     res.sendFile(__dirname + '/public/index.html')
   })
 
-  .use(function(err, req, res, next) {
+  .use((err, req, res, next) => {
     if (err) {
       console.error(err)
       res.status(500).send(err)
