@@ -11,7 +11,7 @@ function auth(req, res, next) {
   if (req.user) return next()
   res.sendStatus(401)
 }
- 
+
 router
   .param('post', (req, res, next, id) => {
     Post
@@ -77,7 +77,7 @@ router
 
 router
   .route('/check/auth')
-    .get((req, res) =>  res.json(req.user))
+    .get((req, res) => res.json(req.user))
 
 // /r
 
@@ -214,10 +214,7 @@ router
 
       var promise = req.post
         .vote(+req.params.vote, req.user.username)
-        .then(post => {
-          console.log(post)
-          res.sendStatus(200)
-        })
+        .then(post => res.sendStatus(200))
         .catch(next)
     })
 
@@ -245,11 +242,11 @@ router
 // Auth
 
 router
-  .post('/signup', passport.authenticate('local-signup'), (req, res) => {
+  .post('/signup', passport.authenticate('signup'), (req, res) => {
       res.json(req.user)
     })
 
-  .post('/login', passport.authenticate('local-login'), (req, res) => {
+  .post('/login', passport.authenticate('login'), (req, res) => {
       res.json(req.user)
     })
 
@@ -257,6 +254,5 @@ router
     req.logout()
     res.sendStatus(200)
   })
-
 
 module.exports = router

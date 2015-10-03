@@ -8,10 +8,8 @@ var UserSchema = mongoose.Schema({
   moderate: [String],
   posts: [{ type: String, ref: 'Post' }],
   comments: [{ type: String, ref: 'Comment' }],
-  local: {
-    email: String,
-    password: String
-  }
+  email: String,
+  password: String
 })
 
 UserSchema.methods.generateHash = function(password) {

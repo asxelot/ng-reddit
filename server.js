@@ -10,6 +10,7 @@ var express      = require('express'),
     session      = require('cookie-session'),
     configDB     = require('./config/db.js')
 
+
 mongoose.Promise = Promise
 
 mongoose
@@ -39,7 +40,7 @@ app
 
   .use((err, req, res, next) => {
     if (err) {
-      console.error(err)
+      console.error('Server error: ', err)
       res.status(500).send(err)
     }
   })
