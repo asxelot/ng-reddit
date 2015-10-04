@@ -5,12 +5,12 @@ var configDB = require('../../config/db'),
     Post = require('../../models/Post'),
     Comment = require('../../models/Comment')
 
-mongoose.Promise = global.Promise
+mongoose.Promise = Promise
 
 process.env.NODE_ENV = 'test'
 
 describe('Post model', function() {
-  var postId, commentId
+  var post, postId, commentId
 
   before(done => {
     if (mongoose.connection.db) return done()
@@ -18,7 +18,7 @@ describe('Post model', function() {
     mongoose.connect(configDB.test, done)
   })
 
-  before(done => clearDB(done) )
+  before(done => clearDB(done))
 
   it('should be saved', done => {
     new Post({ title: 'Test post' }).save(done)
@@ -31,9 +31,10 @@ describe('Post model', function() {
   })
 
   it('should save another', done => {
-    new Post({ title: 'Test post' }).save((err, post) => {
+    new Post({ title: 'Test post' }).save((err, _post) => {
       expect(err).to.not.exist
-      postId = post._id
+      post = _post
+      postId = _post._id
       done()
     })
   })
@@ -86,9 +87,14 @@ describe('Post model', function() {
     Post
       .findById(postId)
       .then(post => post.populate('comments'))
-      .then(post => {
-        done()
-      })
+      .then(post => done())
+      .catch(console.error)
+  })
+
+  it('remove should return promise', done => {
+    post
+      .remove()
+      .then(() => done())
       .catch(console.error)
   })
 })

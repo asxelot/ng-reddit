@@ -4,6 +4,7 @@ var mongoose = require('mongoose'),
 var PostSchema = new mongoose.Schema({
   _id      : { type: String, unique: true, default: shortid.generate },
   title    : String,
+  text     : String,
   link     : String,
   author   : String,
   upvotes  : [String],

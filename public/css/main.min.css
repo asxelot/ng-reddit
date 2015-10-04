@@ -280,6 +280,9 @@ body {
   font: 16px/1.3 'Roboto', sans-serif;
   background: #e1f5fe; }
 
+.ng-cloak {
+  opacity: 0; }
+
 header {
   display: -webkit-box;
   display: -webkit-flex;
@@ -293,10 +296,14 @@ header {
       -ms-flex-pack: justify;
           justify-content: space-between;
   width: 100%; }
+  header .logo {
+    font-size: 2em;
+    font-weight: bold;
+    padding: 0.5em; }
+  header .auth {
+    padding: 1em 0.5em; }
   header ul li {
     display: inline;
-    padding: 0.5em; }
-  header .user {
     padding: 0.5em; }
 
 main {
@@ -367,17 +374,28 @@ aside {
   color: #5677fc; }
 
 form {
-  max-width: 500px;
+  max-width: 600px;
   width: 100%; }
+  form .error {
+    font-size: 0.9em;
+    color: #e51c23; }
 
 .form-group {
   margin: 1em 0 2em;
   position: relative;
   margin-bottom: 45px; }
 
-.error {
-  font-size: 0.9em;
-  color: #e51c23; }
+.errors {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px; }
+  .errors .error {
+    background: #e51c23;
+    padding: 1em;
+    color: white;
+    margin: 1em;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.14), 0 4px 5px 0 rgba(0, 0, 0, 0.098), 0 1px 10px 0 rgba(0, 0, 0, 0.084); }
 
 .warn {
   color: #e51c23; }

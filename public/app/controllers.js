@@ -10,6 +10,8 @@ angular
       $rootScope.user = user
     })
 
+    $http.get('/api/error/401')
+
     $scope.logout = function() {
       $http.get('/api/logout').success(function() {
         $rootScope.user = null

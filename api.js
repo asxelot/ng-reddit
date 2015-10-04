@@ -49,12 +49,9 @@ router
   })
 
 router
-  .route('/check/r/:subr')
+  .route('/check/r/:subreddit')
     .get((req, res, next) => {
-      Subreddit
-        .findOne({ name: req.params.subr })
-        .then(subreddit => res.json(!!subreddit))
-        .catch(next)
+      res.json(!!req.subreddit)
     })
 
 router
@@ -106,9 +103,6 @@ router
         .catch(next)
     })
 
-
-
-
 // /r/:subreddit
 
 router
@@ -128,10 +122,9 @@ router
         .catch(next)
     })
     .post(auth, (req, res, next) => {
-      var post = new Post(_.pick(req.body, 'title', 'link'))
-
-      if (!post.title) return res.sendStatus(406)
-      if (post.link && !validUrl.isUri(post.link))
+      var post = new Post(_.pick(req.body, 'title', 'text', 'link'))
+      if (!req.body.title) return res.sendStatus(406)
+      if (req.body.link && !validUrl.isUri(req.body.link))
         return res.status(406).send('URL is invalid')
 
       post.author = req.user.username
@@ -185,8 +178,15 @@ router
         return res.sendStatus(401)
       }
 
-      req.post
-        .remove()
+      var post = req.post.toObject()
+
+      Post
+        .findOneAndRemove({ _id: post._id })
+        .then(() => User.findOne({ username: post.author }))
+        .then(user => {
+          user.posts.pull(post._id)
+          return user.save()
+        })
         .then(() => res.sendStatus(200))
         .catch(next)
     })
@@ -212,7 +212,7 @@ router
       if (Math.abs(req.params.vote) != 1)
         return res.sendStatus(406)
 
-      var promise = req.post
+      req.post
         .vote(+req.params.vote, req.user.username)
         .then(post => res.sendStatus(200))
         .catch(next)
@@ -253,6 +253,13 @@ router
   .get('/logout', (req, res) => {
     req.logout()
     res.sendStatus(200)
+  })
+
+// Error
+
+router
+  .get('/error/:status', (req, res) => {
+    res.sendStatus(req.params.status)
   })
 
 module.exports = router
