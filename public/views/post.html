@@ -1,11 +1,40 @@
 <div ng-include="'views/_posts.html'"></div>
 
 <div class="content">
-
+  <form name="newCommentForm" ng-submit="addComment()" novalidate>
+    <div class="form-group">
+      <textarea 
+        name="comment" 
+        rows="1"
+        ng-model="newComment.body"
+        elastic-textarea
+        required></textarea>
+        <label>Comment</label>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
   <div class="comments">
-    <div ng-repeat="comment in subreddit.posts[0].comments">
-      <a href="#">{{comment.author}}</a>
-      <p>{{comment.body}}</p>
+    <div ng-repeat="comment in subreddit.posts[0].comments" class="comment">
+      <div class="votes">
+       <i class="material-icons" ng-click="vote(1, post)">keyboard_arrow_up</i>
+        <i class="material-icons" ng-click="vote(-1, post)">keyboard_arrow_down</i>        
+      </div>
+      <div class="entry">
+        <a href="#">{{comment.author}}</a>
+        <span class="muted">
+          {{comment.upvotes.length - comment.downvotes.length}} points
+          {{comment.published | fromNow}}
+        </span>
+        <p>{{comment.body}}</p>
+        <ul class="flat-list muted">
+          <li>
+            <a href="#{{comment._id}}">permalink</a>
+          </li>
+          <li ng-show="user.username === comment.author || user.moderate.indexOf(comment.subreddit) > -1">
+            <a href="#" ng-click="deleteComment(comment)">delete</a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>

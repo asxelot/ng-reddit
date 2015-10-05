@@ -6,9 +6,6 @@ angular
     $rootScope.errors = []
     $rootScope.history = []
 
-    $http.get('/api/error/404')
-    $http.get('/api/error/401')
-
     $http.get('/api/check/auth').success(function(user) {
       $rootScope.user = user
     })
@@ -86,8 +83,35 @@ angular
     }
   })
 
-  .controller('postCtrl', function($rootScope, subreddit) {
+  .controller('postCtrl', function($rootScope, $scope, $http,
+                          subreddit, _subreddit, _setDirty, _remove) {
+    $scope.newComment = {}
     $rootScope.subreddit = subreddit
+
+    $scope.addComment = function() {
+      if ($scope.newCommentForm.$invalid)
+        return _setDirty($scope.newCommentForm)
+
+      _subreddit.save({
+        subreddit: $scope.subreddit.name,
+        comments: 'comments',
+        post: $scope.subreddit.posts[0]._id
+      }, $scope.newComment, function(comment) {
+        $scope.subreddit.posts[0].comments.push(comment)
+        $scope.newComment = {}
+        $scope.newCommentForm.comment.$setPristine()
+      })
+    }
+
+    $scope.deleteComment = function(comment) {
+      $http
+        .delete('/api/comments/' + comment._id)
+        .success(function() {
+          _remove($scope.subreddit.posts[0].comments, comment)
+        })
+
+      return false
+    }
   })
 
   .controller('submitCtrl', function($scope, $routeParams, $location, 

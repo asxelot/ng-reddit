@@ -109,7 +109,6 @@ function inputDirective() {
         ngModel.$options, 
         {allowInvalid: true, updateOnDefault: true}
       )
-      console.log(ngModel)
 
       scope.$watch(attrs.ngModel, function(val) {
         el[val?'addClass':'removeClass']('ng-not-empty')

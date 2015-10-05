@@ -161,6 +161,8 @@ router
       var comment = new Comment(_.pick(req.body, 'body'))
       comment.post = req.post
       comment.author = req.user.username
+      comment.subreddit = req.subreddit.name
+      comment.upvotes.push(req.user.username)
       req.post.comments.push(comment)
       req.user.comments.push(comment)
 
@@ -173,21 +175,28 @@ router
       // change post
     })
     .delete(auth, (req, res, next) => {
+      var _id = req.post._id,
+          author = req.post.author,
+          subreddit = req.post.subreddit
+
       if (
-        req.user.username !== req.post.author &&
+        req.user.username !== author &&
         !~req.subreddit.moderators.indexOf(req.user.username)
       ) {
         return res.sendStatus(401)
       }
 
-      var post = req.post.toObject()
+      Promise
+        .all([
+          Post.findOneAndRemove({ _id }),
+          User.findOne({ username: author })
+        ])
+        .then(data => {
+          var user = data[1]
 
-      Post
-        .findOneAndRemove({ _id: post._id })
-        .then(() => User.findOne({ username: post.author }))
-        .then(user => {
-          user.posts.pull(post._id)
-          return user.save()
+          user.posts.pull(_id)
+          req.subreddit.posts.pull(_id)
+          return Promise.all([user.save(), req.subreddit.save()])
         })
         .then(() => res.sendStatus(200))
         .catch(next)
@@ -226,6 +235,35 @@ router
   .route('/comments/:comment')
     .put(auth, (req, res, next) => {
       // change comment
+    })
+    .delete(auth, (req, res, next) => {
+      var _id = req.comment._id,
+          post = req.comment.post,
+          author = req.comment.author
+
+      if (
+        req.user.username != author &&
+        !~req.subreddit.moderators.indexOf(req.user.username)
+      ) {
+        return res.sendStatus(401)
+      }
+
+      Promise
+        .all([
+          Comment.findOneAndRemove({ _id }),
+          User.findOne({ username: author }),
+          Post.findById(post)
+        ])
+        .then(data => {
+          var user = data[1],
+              post = data[2]
+
+          user.comments.pull(_id)
+          post.comments.pull(_id)
+          return Promise.all([user.save(), post.save()])
+        })
+        .then(() => res.sendStatus(200))
+        .catch(next)
     })
 
 router

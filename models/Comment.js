@@ -5,6 +5,7 @@ var CommentSchema = new mongoose.Schema({
   _id      : { type: String, unique: true, default: shortid.generate },
   body     : String,
   author   : String,
+  subreddit: String,
   upvotes  : [String],
   downvotes: [String],
   published: { type: Date, default: Date.now },

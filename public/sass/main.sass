@@ -20,6 +20,9 @@ $swiftOut: cubic-bezier(0.55,0,0.1,1)
 .hide
   display: none !important
 
+.bold
+  font-weight: bold
+
 *, *:before, *:after
   box-sizing: border-box
   margin: 0
@@ -82,15 +85,22 @@ aside
 .posts
   .post
     +row
-    .votes
-      +column
-      align-items: center
-      justify-content: center
-      width: 50px
-      i
-        cursor: pointer
     .options
       font-size: 0.9em
+
+.comments
+  margin-top: 3em
+  .comment
+    margin-bottom: 1em
+    +row
+    
+.votes
+  +column
+  align-items: center
+  justify-content: center
+  width: 50px
+  i
+    cursor: pointer
 
 .title
   font-weight: bold
@@ -121,6 +131,8 @@ form
   padding: 0.3em 0
   color: $grey
   font-size: 0.9em
+  a
+    color: $grey
 
 .flat-list 
   list-style: none
