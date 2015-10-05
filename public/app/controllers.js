@@ -45,6 +45,14 @@ angular
       })
     }
 
+    $scope.isVoted = function(n, post) {
+      if (!$rootScope.user) return false
+
+      var vote = n > 0 ? 'upvotes' : 'downvotes'
+
+      return ~post[vote].indexOf($rootScope.user.username)
+    }
+
     $rootScope.$on('$routeChangeSuccess', function() {
       $rootScope.history.push($location.$$path)
     })

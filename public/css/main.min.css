@@ -396,9 +396,13 @@ aside {
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
-  width: 50px; }
-  .votes i {
-    cursor: pointer; }
+  width: 50px;
+  color: #aaa; }
+  .votes i, .votes div {
+    cursor: pointer;
+    font-weight: bold; }
+    .votes i.active, .votes div.active {
+      color: black; }
 
 .title {
   font-weight: bold;
