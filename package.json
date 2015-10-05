@@ -3,6 +3,10 @@
   "description": "Reddit clone on MEAN stack",
   "version": "0.0.1",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/asxelot/ng-reddit.git"
+  },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.13.3",
