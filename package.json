@@ -1,7 +1,7 @@
 {
   "name": "ng-reddit",
   "description": "Reddit clone on MEAN stack",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -53,10 +53,13 @@
   },
   "scripts": {
     "postinstall": "bower install",
-    "start": "mongod | node server.js",
+    "start": "node server.js",
     "test": "node node_modules/karma/bin/karma start test/karma.conf.js",
     "test-single-run": "node node_modules/karma/bin/karma start test/karma.conf.js  --single-run",
     "protractor": "protractor test/protractor.conf.js",
     "mocha": "node_modules/mocha/bin/mocha/mocha -w"
+  },
+  "engines": {
+    "node": "4.1.1"
   }
 }
