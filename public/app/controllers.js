@@ -50,13 +50,17 @@ angular
     })
   })
 
-  .controller('homeCtrl', function($scope, $rootScope, posts) {
-    $scope.posts = posts
+  .controller('homeCtrl', function($scope, $rootScope, $routeParams, 
+                          posts) {
     $rootScope.subreddit = null
+    $scope.posts = posts
+    $scope.page = +$routeParams.page || 1
   })
 
-  .controller('subredditCtrl', function($rootScope, subreddit) {
+  .controller('subredditCtrl', function($rootScope, $scope, $routeParams, 
+                                subreddit) {
     $rootScope.subreddit = subreddit
+    $scope.page = +$routeParams.page || 1
   })
 
   .controller('subredditsCtrl', function($scope, $http) {

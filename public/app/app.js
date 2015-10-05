@@ -10,18 +10,21 @@ angular.module('ngReddit', [
         templateUrl: 'views/home.html',
         controller: 'homeCtrl',
         resolve: {
-          posts: function(_posts) {
-            return _posts.query()
+          posts: function($route, _posts) {
+            return _posts.query({
+              page: $route.current.params.page || 1
+            })
           }
         }
       })
       .when('/r/:subreddit', {
-        templateUrl: 'views/subreddit.html',
+        templateUrl: 'views/home.html',
         controller: 'subredditCtrl',
         resolve: {
           subreddit: function($route, _subreddit) {
             return _subreddit.get({
-              subreddit: $route.current.params.subreddit
+              subreddit: $route.current.params.subreddit,
+              page: $route.current.params.page || 1
             })
           }
         }
