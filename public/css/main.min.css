@@ -191,6 +191,11 @@ input, textarea {
   input.ng-dirty.ng-invalid, textarea.ng-dirty.ng-invalid {
     box-shadow: 0 2px 0 0 #e51c23; }
 
+.form-group {
+  margin: 1em 0 2em;
+  position: relative;
+  margin-bottom: 45px; }
+
 textarea {
   height: auto;
   resize: none; }
@@ -376,14 +381,6 @@ aside {
 form {
   max-width: 600px;
   width: 100%; }
-  form .error {
-    font-size: 0.9em;
-    color: #e51c23; }
-
-.form-group {
-  margin: 1em 0 2em;
-  position: relative;
-  margin-bottom: 45px; }
 
 .errors {
   position: fixed;
@@ -395,6 +392,7 @@ form {
     padding: 1em;
     color: white;
     margin: 1em;
+    cursor: pointer;
     box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.14), 0 4px 5px 0 rgba(0, 0, 0, 0.098), 0 1px 10px 0 rgba(0, 0, 0, 0.084); }
 
 .warn {
@@ -416,5 +414,10 @@ div[ng-messages] {
   bottom: -1.5em;
   display: none; }
 
-input.ng-dirty ~ div[ng-messages] {
+.error {
+  font-size: 0.9em;
+  color: #e51c23; }
+
+input.ng-dirty ~ div[ng-messages],
+textarea.ng-dirty ~ div[ng-messages] {
   display: block; }

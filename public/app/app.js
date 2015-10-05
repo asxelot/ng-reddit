@@ -39,6 +39,14 @@ angular.module('ngReddit', [
           }
         }
       })
+      .when('/subreddits', {
+        templateUrl: 'views/subreddits.html',
+        controller: 'subredditsCtrl'
+      })
+      .when('/subreddits/create', {
+        templateUrl: 'views/newSubreddit.html',
+        controller: 'newSubredditCtrl'
+      })
       .when('/submit/:type', {
         templateUrl: 'views/submit.html',
         controller: 'submitCtrl'

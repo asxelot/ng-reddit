@@ -1,0 +1,62 @@
+  <form name="newSubredditForm" ng-submit="submit()" novalidate>
+    <div class="content">
+      <div class="form-group">
+        <input
+          type="text"
+          name="name"
+          ng-model="newSubreddit.name"
+          pattern="^[a-zA-Z0-9]+$"
+          ng-minlength="2"
+          ng-maxlength="12" 
+          ng-model-options="{ debounce: 500 }"
+          subreddit-validator
+          required>
+          <label>Name</label>
+        <div ng-messages="newSubredditForm.name.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>
+      </div>    
+      <div class="form-group">
+        <input
+          type="text"
+          name="title"
+          ng-model="newSubreddit.title"
+          ng-minlength="3"
+          ng-maxlength="20"
+          required>
+          <label>Title</label>
+        <div ng-messages="newSubredditForm.title.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <textarea
+          name="description"
+          rows="1"
+          ng-model="newSubreddit.description"
+          ng-minlength="3"
+          ng-maxlength="500"          
+          elastic-textarea
+          required></textarea>
+        <label>Description</label>
+        <div ng-messages="newSubredditForm.description.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>        
+      </div>
+      <div class="form-group">
+        <textarea
+          name="sidebar"
+          rows="1"
+          ng-model="newSubreddit.sidebar"
+          ng-maxlength="5120"
+          elastic-textarea></textarea>
+        <label>Sidebar</label>
+        <div ng-messages="newSubredditForm.sidebar.$error" class="error">
+          <div ng-messages-include="error-messages"></div>
+        </div>        
+      </div>      
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+
+<pre>{{newSubredditForm|json}}</pre>

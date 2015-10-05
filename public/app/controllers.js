@@ -6,11 +6,12 @@ angular
     $rootScope.errors = []
     $rootScope.history = []
 
+    $http.get('/api/error/404')
+    $http.get('/api/error/401')
+
     $http.get('/api/check/auth').success(function(user) {
       $rootScope.user = user
     })
-
-    $http.get('/api/error/401')
 
     $scope.logout = function() {
       $http.get('/api/logout').success(function() {
@@ -59,6 +60,30 @@ angular
 
   .controller('subredditCtrl', function($rootScope, subreddit) {
     $rootScope.subreddit = subreddit
+  })
+
+  .controller('subredditsCtrl', function($scope, $http) {
+    $http
+      .get('/api/r')
+      .success(function(subreddits) {
+        $scope.subreddits = subreddits
+      })
+  })
+
+  .controller('newSubredditCtrl', function($scope, $http, $location, 
+                                  _setDirty) {
+    $scope.newSubreddit = {}
+
+    $scope.submit = function() {
+      if ($scope.newSubredditForm.$invalid)
+        return _setDirty($scope.newSubredditForm)
+
+      $http
+        .post('/api/r', $scope.newSubreddit)
+        .success(function(subreddit) {
+          $location.path('/r/' + subreddit.name)
+        })
+    }
   })
 
   .controller('postCtrl', function($rootScope, subreddit) {

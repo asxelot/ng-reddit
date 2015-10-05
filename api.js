@@ -49,9 +49,11 @@ router
   })
 
 router
-  .route('/check/r/:subreddit')
+  .route('/check/r/:subr')
     .get((req, res, next) => {
-      res.json(!!req.subreddit)
+      Subreddit
+        .findOne({ name: req.params.subr })
+        .then(subreddit => res.json(!!subreddit))
     })
 
 router
@@ -90,7 +92,7 @@ router
       var subreddit = new Subreddit(_.pick(req.body, 'name',
                           'title', 'description', 'sidebar'))
 
-      if (!subreddit.name || !subreddit.title)
+      if (!subreddit.name || !subreddit.title || !subreddit.description)
         return res.sendStatus(406)
 
       subreddit.creator = req.user.username

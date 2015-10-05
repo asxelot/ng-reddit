@@ -3,7 +3,6 @@ var gulp       = require('gulp'),
     cssmin     = require('gulp-cssmin'),
     ngAnnotate = require('gulp-ng-annotate'),
     sourcemaps = require('gulp-sourcemaps'),
-    sprity     = require('sprity'),
     uglify     = require('gulp-uglify'),
     concat     = require('gulp-concat'),
     rename     = require('gulp-rename'),
@@ -13,7 +12,7 @@ var gulp       = require('gulp'),
 
 var src = {
   sass: 'public/sass/*.sass',
-  html: 'public/**/*.html',
+  html: ['public/views/*.html', 'public/index.html'],
   js  : 'public/app/*.js'
 }
 
@@ -24,9 +23,7 @@ function onError(err) {
 
 gulp.task('sass', function() {
   gulp.src('public/sass/main.sass')
-      .pipe(sass({
-        includePaths: ['public/sass']
-      }).on('error', onError))
+      .pipe(sass().on('error', onError))
       .pipe(prefix())
       // .pipe(cssmin())
       .pipe(rename('main.min.css'))
@@ -56,14 +53,6 @@ gulp.task('minjs', function() {
 gulp.task('js', function() {
   gulp.src(src.js)
       .pipe(livereload())
-})
-
-gulp.task('sprite', function() {
-  return sprity.src({
-    src: 'public/images/*.png',
-    style: 'public/sass/_sprite.sass',
-    processor: 'sass'
-  }).pipe(gulp.dest('public/css'))
 })
 
 gulp.task('default', function() {

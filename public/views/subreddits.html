@@ -1,0 +1,8 @@
+<div class="content">
+  <div ng-repeat="subreddit in subreddits">
+    <a href="/r/{{subreddit.name}}">
+      /r/{{subreddit.name}}: {{subreddit.title}}
+    </a>
+    <p>{{subreddit.description}}</p>
+  </div>
+</div>

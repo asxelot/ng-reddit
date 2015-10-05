@@ -51,7 +51,7 @@
       </form>
       <a href="/submit/link" class="btn wide">Submit a new link</a>
       <a href="/submit/text" class="btn wide">Submit a new text post</a>
-      <div ng-if="subreddit">
+      <div ng-if="subreddit" class="subreddit-info">
         <p>
           <a href="/r/{{subreddit.name}}" class="title">
             {{subreddit.title}}
@@ -68,11 +68,15 @@
           </ul>
         </p>
       </div>
+      <!-- /.subreddit-info -->
+      <a href="/subreddits/create" class="btn wide">
+        Create your own subreddit
+      </a>
     </div>
   </aside>
 
-  <div ng-repeat="error in errors track by $index" class="errors">
-    <div class="error" ng-click="errors.splice($index, 1)">{{error}}</div>
+  <div class="errors">
+    <div ng-repeat="error in errors track by $index" class="error" ng-click="errors.splice($index, 1)">{{error}}</div>
   </div>
 
   <script type="text/ng-template" id="error-messages">

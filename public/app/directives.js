@@ -11,7 +11,7 @@ angular
           })
       })
     }
-
+    
     return {
       restrict: 'A',
       require: 'ngModel',
@@ -102,7 +102,15 @@ angular
 function inputDirective() {
   return {
     restrict: 'E',
-    link: function(scope, el, attrs) {
+    require: 'ngModel',
+    link: function(scope, el, attrs, ngModel) {
+      ngModel.$options = ngModel.$options || {}
+      angular.extend(
+        ngModel.$options, 
+        {allowInvalid: true, updateOnDefault: true}
+      )
+      console.log(ngModel)
+
       scope.$watch(attrs.ngModel, function(val) {
         el[val?'addClass':'removeClass']('ng-not-empty')
       })
