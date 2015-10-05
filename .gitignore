@@ -1,4 +1,5 @@
 node_modules
 public/libs
 config
-config.js
+config
+npm-debug.log
