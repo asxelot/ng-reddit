@@ -10,8 +10,8 @@ angular.module('ngReddit', [
         templateUrl: 'views/home.html',
         controller: 'homeCtrl',
         resolve: {
-          posts: function($route, _posts) {
-            return _posts.query({
+          subreddit: function($route, _posts) {
+            return _posts.get({
               page: $route.current.params.page || 1
             })
           }

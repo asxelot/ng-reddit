@@ -51,7 +51,7 @@
       </form>
       <a href="/submit/link" class="btn wide">Submit a new link</a>
       <a href="/submit/text" class="btn wide">Submit a new text post</a>
-      <div ng-if="subreddit" class="subreddit-info">
+      <div ng-if="subreddit.name" class="subreddit-info">
         <p>
           <a href="/r/{{subreddit.name}}" class="title">
             {{subreddit.title}}
@@ -88,9 +88,10 @@
     <p ng-message="url">Invalid URL</p>
     <p ng-message="email">Invalid email</p>
     <p ng-message="matchPassword">Password dont match</p>
-    <p ng-message="checkSubreddit">This Subreddit not found</p>
+    <p ng-message="subredditExist">This Subreddit not found</p>
+    <p ng-message="subredditAvailable">Subreddit already exist</p>
     <p ng-message="checkUsername">This username already taken</p>
-    <p ng-message="checkEmail">This email already taken</p>
+    <p ng-message="emailExist">This email already taken</p>
   </script>
 </body>
 </html>

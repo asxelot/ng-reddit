@@ -1,8 +1,8 @@
 angular
   .module('ngReddit')
 
-  .directive('subredditValidator', function($q, $http) {
-    function checkSubreddit(val) {
+  .directive('subredditExist', function($q, $http) {
+    function subredditExist(val) {
       return $q(function(resolve, reject) {
         $http
           .get('/api/check/r/' + val)
@@ -16,7 +16,27 @@ angular
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, el, attrs, ngModel) {
-        ngModel.$asyncValidators.checkSubreddit = checkSubreddit
+        ngModel.$asyncValidators.subredditExist = subredditExist
+      }
+    }
+  })
+
+  .directive('subredditAvailable', function($q, $http) {
+    function subredditAvailable(val) {
+      return $q(function(resolve, reject) {
+        $http
+          .get('/api/check/r/' + val)
+          .success(function(subr) {
+            subr ? reject() : resolve()
+          })
+      })
+    }
+    
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: function(scope, el, attrs, ngModel) {
+        ngModel.$asyncValidators.subredditAvailable = subredditAvailable
       }
     }
   })
@@ -46,8 +66,8 @@ angular
     }
   })
 
-  .directive('emailValidator', function($q, $http) {
-    function checkEmail(val) {
+  .directive('emailExist', function($q, $http) {
+    function emailExist(val) {
       return $q(function(resolve, reject) {
         $http
           .get('/api/check/email/' + val)
@@ -61,7 +81,7 @@ angular
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, el, attrs, ngModel) {
-        ngModel.$asyncValidators.checkEmail = checkEmail
+        ngModel.$asyncValidators.emailExist = emailExist
       }
     }
   })

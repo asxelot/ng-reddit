@@ -39,7 +39,7 @@
           ng-model="newPost.subreddit"
           ng-model-options="{ debounce: 500 }"
           pattern="^[a-zA-Z0-9]+$"
-          subreddit-validator
+          subreddit-exist
           required>
         <label>Subreddit</label>
         <div ng-messages="newPostForm.subreddit.$error" class="error">

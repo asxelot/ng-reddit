@@ -110,17 +110,25 @@ router
 router
   .route('/r/:subreddit')
     .get((req, res, next) => {
+      var allPosts = req.subreddit.posts.length,
+          limit = 20,
+          skip = (req.query.page - 1 || 0) * limit
+
       req.subreddit
         .populate({
           path: 'posts',
           options: {
             sort: { published: -1 },
-            skip: (req.query.page - 1 || 0) * 20,
-            limit: 20
+            skip,
+            limit
           }
         })
         .execPopulate()
-        .then(subreddit => res.json(subreddit))
+        .then(subreddit => {
+          subreddit = subreddit.toObject()
+          subreddit.hasNextPage = allPosts >= skip + limit
+          res.json(subreddit)
+        })
         .catch(next)
     })
     .post(auth, (req, res, next) => {
@@ -207,12 +215,26 @@ router
 router
   .route('/posts')
     .get((req, res, next) => {
+      var posts,
+          limit = 20,
+          skip = (req.query.page - 1 || 0) * limit
+
       Post
         .find()
         .sort('-published')
-        .skip((req.query.page - 1) * 20)
+        .skip(skip)
         .limit(20)
-        .then(posts => res.json(posts))
+        .then(_posts => {
+          posts = _posts
+          return Post.count()
+        })
+        .then(allPosts => {
+          res.json({
+            posts,
+            allPosts,
+            hasNextPage: allPosts >= skip + limit
+          })
+        })
         .catch(next)
     })
 

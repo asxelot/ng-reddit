@@ -2,7 +2,8 @@ angular
   .module('ngReddit')
 
   .controller('mainCtrl', function($rootScope, $scope, $http, $location,
-                          _subreddit, _remove) {
+                          $routeParams, _subreddit, _remove) {
+    $scope.page = $routeParams.page || 1
     $rootScope.errors = []
     $rootScope.history = []
 
@@ -53,22 +54,23 @@ angular
       return ~post[vote].indexOf($rootScope.user.username)
     }
 
+    $scope.changePage = function(n) {
+      $location.search('page', $scope.page += n)
+    }
+
     $rootScope.$on('$routeChangeSuccess', function() {
       $rootScope.history.push($location.$$path)
     })
   })
 
   .controller('homeCtrl', function($scope, $rootScope, $routeParams, 
-                          posts) {
-    $rootScope.subreddit = null
-    $scope.posts = posts
-    $scope.page = +$routeParams.page || 1
+                          subreddit) {
+    $rootScope.subreddit = subreddit
   })
 
   .controller('subredditCtrl', function($rootScope, $scope, $routeParams, 
                                 subreddit) {
     $rootScope.subreddit = subreddit
-    $scope.page = +$routeParams.page || 1
   })
 
   .controller('subredditsCtrl', function($scope, $http) {

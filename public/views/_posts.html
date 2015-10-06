@@ -1,5 +1,5 @@
 <div class="posts">
-  <div ng-repeat="post in posts || subreddit.posts | orderBy: '-published'" class="post content">
+  <div ng-repeat="post in subreddit.posts | orderBy: '-published'" class="post content">
     <div class="votes">
       <i class="material-icons" ng-click="vote(1, post)" ng-class="{active: isVoted(1, post)}">keyboard_arrow_up</i>
       <div ng-class="{active: isVoted(1, post) || isVoted(-1, post)}">
@@ -16,7 +16,7 @@
       </a>
       <p class="muted">
         submited {{post.published | fromNow}} by {{post.author}}
-        <span ng-hide="subreddit">
+        <span ng-hide="subreddit.name">
           to <a href="/r/{{post.subreddit}}">/r/{{post.subreddit}}</a>
         </span>
       </p>
@@ -39,6 +39,18 @@
   </div>
 </div>
 
-<div ng-if="!subreddit.posts.length && !posts.length">
+<div ng-if="!subreddit.posts.length">
   Not yet any posts
+</div>
+
+<div class="pagination" ng-show="page > 1 || subreddit.hasNextPage">
+  <div class="links">
+    <a ng-show="page > 1" ng-click="changePage(-1)" href="#">
+      &lt; prev
+    </a>
+    <span ng-show="page > 1" class="muted">|</span>
+    <a ng-show="subreddit.hasNextPage" ng-click="changePage(1)" href="#">
+      next &gt;
+    </a>
+  </div>
 </div>
