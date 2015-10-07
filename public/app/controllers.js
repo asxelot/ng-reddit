@@ -2,8 +2,8 @@ angular
   .module('ngReddit')
 
   .controller('mainCtrl', function($rootScope, $scope, $http, $location,
-                          $routeParams, _subreddit, _remove) {
-    $scope.page = $routeParams.page || 1
+                          $routeParams, $anchorScroll, _subreddit, _remove) {
+    $scope.page = +$location.search().page || 1
     $rootScope.errors = []
     $rootScope.history = []
 
@@ -57,6 +57,7 @@ angular
 
     $scope.changePage = function(n) {
       $location.search('page', $scope.page += n)
+      $anchorScroll(0)
     }
 
     $rootScope.$on('$routeChangeSuccess', function() {

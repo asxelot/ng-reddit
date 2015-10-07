@@ -9,6 +9,7 @@ angular.module('ngReddit', [
       .when('/', {
         templateUrl: 'views/home.html',
         controller: 'homeCtrl',
+        reloadOnSearch: true, 
         resolve: {
           subreddit: function($route, _posts) {
             return _posts.get({

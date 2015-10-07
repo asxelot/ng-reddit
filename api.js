@@ -118,11 +118,7 @@ router
       req.subreddit
         .populate({
           path: 'posts',
-          options: {
-            sort: { published: -1 },
-            skip,
-            limit
-          }
+          options: { sort: '-published', skip, limit }
         })
         .execPopulate()
         .then(subreddit => {
@@ -134,8 +130,10 @@ router
     })
     .post(auth, (req, res, next) => {
       var post = new Post(_.pick(req.body, 'title', 'text', 'link'))
-      if (!req.body.title) return res.sendStatus(406)
-      if (req.body.link && !validUrl.isUri(req.body.link))
+
+      if (!post.title) 
+        return res.sendStatus(406)
+      if (post.link && !validUrl.isUri(post.link))
         return res.status(406).send('URL is invalid')
 
       post.author = req.user.username
@@ -220,20 +218,16 @@ router
           limit = 20,
           skip = (req.query.page - 1 || 0) * limit
 
-      Post
-        .find()
-        .sort('-published')
-        .skip(skip)
-        .limit(20)
-        .then(_posts => {
-          posts = _posts
-          return Post.count()
-        })
-        .then(allPosts => {
+      Promise
+        .all([
+          Post.find({}, {}, { sort: '-published', skip, limit }),
+          Post.count()
+        ])
+        .then(data => {
           res.json({
-            posts,
-            allPosts,
-            hasNextPage: allPosts >= skip + limit
+            posts: data[0],
+            allPosts: data[1],
+            hasNextPage: data[1] >= skip + limit
           })
         })
         .catch(next)
