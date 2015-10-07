@@ -1,4 +1,5 @@
 angular.module('ngReddit', [
+    'ngMessages',
     'ngResource',
     'ngRoute'
   ])
@@ -9,19 +10,22 @@ angular.module('ngReddit', [
         templateUrl: 'views/home.html',
         controller: 'homeCtrl',
         resolve: {
-          posts: function(_posts) {
-            return _posts.query()
+          subreddit: function($route, _posts) {
+            return _posts.get({
+              page: $route.current.params.page || 1
+            }).$promise
           }
         }
       })
       .when('/r/:subreddit', {
-        templateUrl: 'views/subreddit.html',
+        templateUrl: 'views/home.html',
         controller: 'subredditCtrl',
         resolve: {
           subreddit: function($route, _subreddit) {
             return _subreddit.get({
-              subreddit: $route.current.params.subreddit
-            })
+              subreddit: $route.current.params.subreddit,
+              page: $route.current.params.page || 1
+            }).$promise
           }
         }
       })
@@ -34,9 +38,17 @@ angular.module('ngReddit', [
               subreddit: $route.current.params.subreddit,
               comments: 'comments',
               post: $route.current.params.post
-            })
+            }).$promise
           }
         }
+      })
+      .when('/subreddits', {
+        templateUrl: 'views/subreddits.html',
+        controller: 'subredditsCtrl'
+      })
+      .when('/subreddits/create', {
+        templateUrl: 'views/newSubreddit.html',
+        controller: 'newSubredditCtrl'
       })
       .when('/submit/:type', {
         templateUrl: 'views/submit.html',
@@ -53,10 +65,6 @@ angular.module('ngReddit', [
 
 
     $locationProvider.html5Mode(true)
-
-    // $rootScope.$on('$routeChangeSuccess', function() {
-
-    // })
   })
 
   .config(function($httpProvider) {
@@ -73,14 +81,12 @@ angular.module('ngReddit', [
       }
     })
   })
-
-angular.module("ngReddit",["ngResource","ngRoute"]).config(["$routeProvider","$locationProvider",function(r,e){r.when("/",{templateUrl:"views/home.html",controller:"homeCtrl",resolve:{posts:["_posts",function(r){return r.query()}]}}).when("/r/:subreddit",{templateUrl:"views/subreddit.html",controller:"subredditCtrl",resolve:{subreddit:["$route","_subreddit",function(r,e){return e.get({subreddit:r.current.params.subreddit})}]}}).when("/r/:subreddit/comments/:post",{templateUrl:"views/post.html",controller:"postCtrl",resolve:{subreddit:["$route","_subreddit",function(r,e){return e.get({subreddit:r.current.params.subreddit,comments:"comments",post:r.current.params.post})}]}}).when("/submit/:type",{templateUrl:"views/submit.html",controller:"submitCtrl"}).when("/signup",{templateUrl:"views/signup.html",controller:"signupCtrl"}).when("/login",{templateUrl:"views/login.html",controller:"loginCtrl"}),e.html5Mode(!0)}]).config(["$httpProvider",function(r){r.interceptors.push(["$q","$rootScope",function(r,e){function t(t){return console.error(t),e.errors.push(t.data),r.reject(t)}return{requestError:t,responseError:t}}])}]);
-//# sourceMappingURL=app.min.js.map
 angular
   .module('ngReddit')
 
   .controller('mainCtrl', function($rootScope, $scope, $http, $location,
-                          _subreddit, _remove) {
+                          $routeParams, _subreddit, _remove) {
+    $scope.page = $routeParams.page || 1
     $rootScope.errors = []
     $rootScope.history = []
 
@@ -92,9 +98,9 @@ angular
       $http.get('/api/logout').success(function() {
         $rootScope.user = null
       })
-    }
+    } 
 
-    $scope.delete = function(post) {
+    $scope.delete = function(posts, post) {
       return _subreddit.delete({
         subreddit: post.subreddit,
         comments: 'comments',
@@ -104,36 +110,137 @@ angular
       })
     }
 
+    $scope.vote = function(n, post) {
+      if (!$rootScope.user) return false
+
+      var url = '/api/' + 
+                (post.comments ? 'posts/' : 'comments/') +
+                post._id + '/vote/' + n
+
+      $http.put(url).success(function() {
+        var vote = n > 0 ? 'upvotes' : 'downvotes',
+            username = $rootScope.user.username
+
+        if (~post[vote].indexOf(username))
+          _remove(post[vote], username)
+        else
+          post[vote].push(username)
+        
+        _remove(post[n < 0 ? 'upvotes' : 'downvotes'], username)
+      })
+    }
+
+    $scope.isVoted = function(n, post) {
+      if (!$rootScope.user) return false
+
+      var vote = n > 0 ? 'upvotes' : 'downvotes'
+
+      return ~post[vote].indexOf($rootScope.user.username)
+    }
+
+    $scope.changePage = function(n) {
+      $location.search('page', $scope.page += n)
+    }
+
     $rootScope.$on('$routeChangeSuccess', function() {
       $rootScope.history.push($location.$$path)
     })
   })
 
-  .controller('homeCtrl', function($scope) {
-    $scope.posts = posts
+  .controller('homeCtrl', function($scope, $rootScope, $routeParams, 
+                          subreddit) {
+    $rootScope.subreddit = subreddit
   })
 
-  .controller('subredditCtrl', function($scope, subreddit) {
-    $scope.subreddit = subreddit
+  .controller('subredditCtrl', function($rootScope, $scope, $routeParams, 
+                                subreddit) {
+    $rootScope.subreddit = subreddit
   })
 
-  .controller('postCtrl', function($scope, subreddit) {
-    $scope.subreddit = subreddit
+  .controller('subredditsCtrl', function($scope, $http) {
+    $http
+      .get('/api/r')
+      .success(function(subreddits) {
+        $scope.subreddits = subreddits
+      })
   })
 
-  .controller('submitCtrl', function($scope, $routeParams) {
+  .controller('newSubredditCtrl', function($scope, $http, $location, 
+                                  _setDirty) {
+    $scope.newSubreddit = {}
+
+    $scope.submit = function() {
+      if ($scope.newSubredditForm.$invalid)
+        return _setDirty($scope.newSubredditForm)
+
+      $http
+        .post('/api/r', $scope.newSubreddit)
+        .success(function(subreddit) {
+          $location.path('/r/' + subreddit.name)
+        })
+    }
+  })
+
+  .controller('postCtrl', function($rootScope, $scope, $http,
+                          subreddit, _subreddit, _setDirty, _remove) {
+    $scope.newComment = {}
+    $scope.expandText = true
+    $rootScope.subreddit = subreddit
+
+    $scope.addComment = function() {
+      if ($scope.newCommentForm.$invalid)
+        return _setDirty($scope.newCommentForm)
+
+      _subreddit.save({
+        subreddit: $scope.subreddit.name,
+        comments: 'comments',
+        post: $scope.subreddit.posts[0]._id
+      }, $scope.newComment, function(comment) {
+        $scope.subreddit.posts[0].comments.push(comment)
+        $scope.newComment = {}
+        $scope.newCommentForm.comment.$setPristine()
+      })
+    }
+
+    $scope.deleteComment = function(comment) {
+      $http
+        .delete('/api/comments/' + comment._id)
+        .success(function() {
+          _remove($scope.subreddit.posts[0].comments, comment)
+        })
+
+      return false
+    }
+  })
+
+  .controller('submitCtrl', function($scope, $routeParams, $location, 
+                            _subreddit, _setDirty) {
     $scope.newPost = {}
     $scope.type = $routeParams.type
+    
+    if ($scope.subreddit) 
+      $scope.newPost.subreddit = $scope.subreddit.name
+
+    $scope.submit = function() {
+      if ($scope.newPostForm.$invalid)
+        return _setDirty($scope.newPostForm)
+
+      _subreddit.save({ 
+        subreddit: $scope.newPost.subreddit 
+      }, $scope.newPost, function(post) {
+        $location.path('/r/' + post.subreddit + '/comments/' + post._id)
+      })
+    }
   })
 
   .controller('signupCtrl', function($rootScope, $scope, $http, $location,
-                            _afterLogin) {
+                            _afterLogin, _setDirty) {
     if ($rootScope.user) return $location.path('/')
     $scope.newUser = {}
 
     $scope.signup = function() {
-      if ($scope.newUser.password !== $scope.newUser.confirmPassword)
-        return false
+      if ($scope.signupForm.$invalid) 
+        return _setDirty($scope.signupForm)
 
       $http
         .post('/api/signup', $scope.newUser)
@@ -142,11 +249,14 @@ angular
   })
 
   .controller('loginCtrl', function($rootScope, $scope, $http, $location,
-                           _afterLogin) {
+                           _afterLogin, _setDirty) {
     if ($rootScope.user) return $location.path('/')
     $scope.loggedUser = {}
 
     $scope.login = function() {
+      if ($scope.loginForm.$invalid)
+        return _setDirty($scope.loginForm)
+
       $http
         .post('/api/login', $scope.loggedUser)
         .success(_afterLogin)
@@ -155,8 +265,8 @@ angular
 angular
   .module('ngReddit')
 
-  .directive('subredditValidator', function($q, $http) {
-    function checkSubreddit(val) {
+  .directive('subredditExist', function($q, $http) {
+    function subredditExist(val) {
       return $q(function(resolve, reject) {
         $http
           .get('/api/check/r/' + val)
@@ -165,12 +275,32 @@ angular
           })
       })
     }
-
+    
     return {
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, el, attrs, ngModel) {
-        ngModel.$asyncValidators.checkSubreddit = checkSubreddit
+        ngModel.$asyncValidators.subredditExist = subredditExist
+      }
+    }
+  })
+
+  .directive('subredditAvailable', function($q, $http) {
+    function subredditAvailable(val) {
+      return $q(function(resolve, reject) {
+        $http
+          .get('/api/check/r/' + val)
+          .success(function(subr) {
+            subr ? reject() : resolve()
+          })
+      })
+    }
+    
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      link: function(scope, el, attrs, ngModel) {
+        ngModel.$asyncValidators.subredditAvailable = subredditAvailable
       }
     }
   })
@@ -186,17 +316,22 @@ angular
       })
     }
 
+    function invalidUsername(username) {
+      return /^[a-zA-Z][a-zA-Z0-9]+$/.test(username)
+    }
+
     return {
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, el, attrs, ngModel) {
         ngModel.$asyncValidators.checkUsername = checkUsername
+        ngModel.$validators.invalidUsername = invalidUsername
       }
     }
   })
 
-  .directive('emailValidator', function($q, $http) {
-    function checkEmail(val) {
+  .directive('emailExist', function($q, $http) {
+    function emailExist(val) {
       return $q(function(resolve, reject) {
         $http
           .get('/api/check/email/' + val)
@@ -210,7 +345,7 @@ angular
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, el, attrs, ngModel) {
-        ngModel.$asyncValidators.checkEmail = checkEmail
+        ngModel.$asyncValidators.emailExist = emailExist
       }
     }
   })
@@ -242,6 +377,29 @@ angular
       }
     }
   })
+
+  .directive('input', inputDirective)
+
+  .directive('textarea', inputDirective)
+
+
+function inputDirective() {
+  return {
+    restrict: 'E',
+    require: 'ngModel',
+    link: function(scope, el, attrs, ngModel) {
+      ngModel.$options = ngModel.$options || {}
+      angular.extend(
+        ngModel.$options, 
+        {allowInvalid: true, updateOnDefault: true}
+      )
+
+      scope.$watch(attrs.ngModel, function(val) {
+        el[val?'addClass':'removeClass']('ng-not-empty')
+      })
+    }
+  }  
+}
 angular
   .module('ngReddit')
 
@@ -267,27 +425,16 @@ angular
   .factory('_afterLogin', function($http, $rootScope, $location) {
     return function(user) {
       $rootScope.user = user
-      $location.path($rootScope.history.slice(-2)[0] || '/')
+      $location.path($rootScope.history[$rootScope.history.length-2] || '/')
     }
   })
 
-  .factory('_vote', function($http, $rootScope, _remove) {
-    return function(n, post, url) {
-      $http.put(url).success(function() {
-        if (!$rootScope.user) return
-
-        var vote = n > 0 ? 'upvoted' : 'downvoted',
-            username = $rootScope.user.username
-
-        if (~post[vote].indexOf(username))
-          _remove(post[vote], username)
-        else
-          post[vote].push(username)
-        _remove(post[n < 0 ? 'upvoted' : 'downvoted'], username)
-      })
+  .factory('_setDirty', function() {
+    return function(form) {
+      for (var k in form) 
+        if (/^[^$]/.test(k)) form[k].$setDirty()      
     }
   })
-
 angular
   .module('ngReddit')
 
@@ -308,5 +455,26 @@ angular
         else
           return m[1]
       })
+    }
+  })
+
+  .filter('fromNow', function() {
+    return function(date) {
+      return moment(date).fromNow()
+    }
+  })
+
+  .filter('md', function($sce) {
+    return function(text) {
+      return $sce.trustAsHtml(markdown.toHTML(text || ''))
+    }
+  })
+
+  .filter('hostname', function() {
+    return function(link) {
+      if (!link) return 'self'
+      var a = document.createElement('a')
+      a.href = link
+      return a.hostname
     }
   })

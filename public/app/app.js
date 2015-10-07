@@ -13,7 +13,7 @@ angular.module('ngReddit', [
           subreddit: function($route, _posts) {
             return _posts.get({
               page: $route.current.params.page || 1
-            })
+            }).$promise
           }
         }
       })
@@ -25,7 +25,7 @@ angular.module('ngReddit', [
             return _subreddit.get({
               subreddit: $route.current.params.subreddit,
               page: $route.current.params.page || 1
-            })
+            }).$promise
           }
         }
       })
@@ -38,7 +38,7 @@ angular.module('ngReddit', [
               subreddit: $route.current.params.subreddit,
               comments: 'comments',
               post: $route.current.params.post
-            })
+            }).$promise
           }
         }
       })

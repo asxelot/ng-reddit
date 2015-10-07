@@ -26,3 +26,18 @@ angular
       return moment(date).fromNow()
     }
   })
+
+  .filter('md', function($sce) {
+    return function(text) {
+      return $sce.trustAsHtml(markdown.toHTML(text || ''))
+    }
+  })
+
+  .filter('hostname', function() {
+    return function(link) {
+      if (!link) return 'self'
+      var a = document.createElement('a')
+      a.href = link
+      return a.hostname
+    }
+  })

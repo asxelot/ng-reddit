@@ -54,6 +54,7 @@ router
       Subreddit
         .findOne({ name: req.params.subr })
         .then(subreddit => res.json(!!subreddit))
+        .catch(next)
     })
 
 router

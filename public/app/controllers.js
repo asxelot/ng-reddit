@@ -15,7 +15,7 @@ angular
       $http.get('/api/logout').success(function() {
         $rootScope.user = null
       })
-    }
+    } 
 
     $scope.delete = function(posts, post) {
       return _subreddit.delete({
@@ -42,6 +42,7 @@ angular
           _remove(post[vote], username)
         else
           post[vote].push(username)
+        
         _remove(post[n < 0 ? 'upvotes' : 'downvotes'], username)
       })
     }
@@ -100,6 +101,7 @@ angular
   .controller('postCtrl', function($rootScope, $scope, $http,
                           subreddit, _subreddit, _setDirty, _remove) {
     $scope.newComment = {}
+    $scope.expandText = true
     $rootScope.subreddit = subreddit
 
     $scope.addComment = function() {

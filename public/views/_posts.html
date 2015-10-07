@@ -7,14 +7,18 @@
       </div>
       <i class="material-icons" ng-click="vote(-1, post)" ng-class="{active: isVoted(-1, post)}">keyboard_arrow_down</i>
     </div>
-    <div class="entry">
-      <a href="/r/{{post.subreddit}}/comments/{{post._id}}" class="title" ng-if="!post.link">
-        {{post.title}}
-      </a>
-      <a href="{{post.link}}" target="_blank" class="title" ng-if="post.link">
-        {{post.title}}
-      </a>
-      <p class="muted">
+    <div class="entry" ng-init="isExpanded = false">
+      <div class="title">
+        <a href="/r/{{post.subreddit}}/comments/{{post._id}}" ng-if="!post.link">
+          {{post.title}}
+        </a>
+        <a href="{{post.link}}" target="_blank" class="title" ng-if="post.link">
+          {{post.title}} 
+        </a>
+        <span class="muted">({{post.link|hostname}})</span>
+      </div>
+      <p class="about muted">
+        <i ng-show="post.text" ng-click="isExpand = !isExpand" class="material-icons">add_circle</i>
         submited {{post.published | fromNow}} by {{post.author}}
         <span ng-hide="subreddit.name">
           to <a href="/r/{{post.subreddit}}">/r/{{post.subreddit}}</a>
@@ -35,11 +39,15 @@
         </li>
       </ul>
     </div>
+    <div ng-if="post.text && (isExpand || expandText)" class="post-text">
+      <hr>
+      <div ng-bind-html="post.text | md"></div>
+    </div>
     <!-- /.entry -->
   </div>
 </div>
 
-<div ng-if="!subreddit.posts.length">
+<div ng-if="!subreddit.posts.length" class="content">
   Not yet any posts
 </div>
 

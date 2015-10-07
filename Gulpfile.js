@@ -59,5 +59,5 @@ gulp.task('default', function() {
   livereload.listen()
   gulp.watch(src.sass, ['sass'])
   gulp.watch(src.html, ['html'])
-  gulp.watch(src.js, ['js'])
+  gulp.watch(src.js, ['minjs'])
 })

@@ -272,6 +272,12 @@ a {
 ul {
   list-style: none; }
 
+html {
+  font: 16px/1.4 'Roboto', sans-serif; }
+  @media (max-width: 480px) {
+    html {
+      font-size: 15px; } }
+
 body {
   display: -webkit-box;
   display: -webkit-flex;
@@ -284,7 +290,6 @@ body {
   -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
-  font: 16px/1.3 'Roboto', sans-serif;
   background: #e1f5fe; }
 
 .ng-cloak {
@@ -365,20 +370,36 @@ aside {
   -webkit-flex-flow: row wrap;
       -ms-flex-flow: row wrap;
           flex-flow: row wrap; }
-  .posts .post .options {
-    font-size: 0.9em; }
-
-.comments {
-  margin-top: 3em; }
-  .comments .comment {
-    margin-bottom: 1em;
+  .posts .post .entry {
     display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-flex-flow: row wrap;
-        -ms-flex-flow: row wrap;
-            flex-flow: row wrap; }
+    -webkit-flex-flow: column nowrap;
+        -ms-flex-flow: column nowrap;
+            flex-flow: column nowrap;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+        -ms-flex: 1 1 auto;
+            flex: 1 1 auto; }
+    .posts .post .entry .about {
+      display: -webkit-box;
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-align: center;
+      -webkit-align-items: center;
+          -ms-flex-align: center;
+              align-items: center; }
+      .posts .post .entry .about i {
+        font-size: 20px;
+        cursor: pointer; }
+  .posts .post .post-text {
+    width: 100%;
+    margin-left: 50px; }
+    @media (max-width: 480px) {
+      .posts .post .post-text {
+        margin: 0; } }
 
 .votes {
   display: -webkit-box;
@@ -398,11 +419,26 @@ aside {
           justify-content: center;
   width: 50px;
   color: #aaa; }
+  @media (max-width: 480px) {
+    .votes {
+      width: 25px; } }
   .votes i, .votes div {
     cursor: pointer;
     font-weight: bold; }
     .votes i.active, .votes div.active {
       color: black; }
+
+.comments {
+  margin-top: 3em; }
+  .comments .comment {
+    margin-bottom: 1em;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-flow: row wrap;
+        -ms-flex-flow: row wrap;
+            flex-flow: row wrap; }
 
 .title {
   font-weight: bold;
@@ -432,7 +468,8 @@ form {
 .muted {
   padding: 0.3em 0;
   color: #9e9e9e;
-  font-size: 0.9em; }
+  font-size: 0.9rem;
+  font-weight: normal; }
   .muted a {
     color: #9e9e9e; }
 

@@ -60,6 +60,6 @@
     "mocha": "node_modules/mocha/bin/mocha/mocha -w"
   },
   "engines": {
-    "node": "4.1.1"
+    "node": "4.1.2"
   }
 }
