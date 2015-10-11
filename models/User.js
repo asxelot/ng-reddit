@@ -6,8 +6,6 @@ var UserSchema = mongoose.Schema({
   _id: { type: String, unique: true, default: shortid.generate },
   username: String,
   moderate: [String],
-  posts: [{ type: String, ref: 'Post' }],
-  comments: [{ type: String, ref: 'Comment' }],
   email: String,
   password: String
 })

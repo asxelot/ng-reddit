@@ -20,7 +20,7 @@ router
         if (!post) return res.status(404).send('Post not found!')
 
         req.post = post
-        return next()
+        next()
       })
       .catch(next)
   })
@@ -70,7 +70,7 @@ router
   .route('/check/email/:email')
     .get((req, res, next) => {
       User
-        .findOne({ 'local.email': req.params.email })
+        .findOne({ 'email': req.params.email })
         .then(user => res.json(!!user))
         .catch(next)
     })
@@ -139,12 +139,9 @@ router
       post.author = req.user.username
       post.subreddit = req.subreddit.name
       post.upvotes.push(req.user.username)
-      req.subreddit.posts.push(post)
-      req.user.posts.push(post)
 
-      Promise
-        .all([post.save(), req.subreddit.save(), req.user.save()])
-        .then(data => res.json(data[0]))
+      post.save()
+        .then(post => res.json(post))
         .catch(next)
     })
 
@@ -170,43 +167,25 @@ router
       comment.author = req.user.username
       comment.subreddit = req.subreddit.name
       comment.upvotes.push(req.user.username)
-      req.post.comments.push(comment)
-      req.user.comments.push(comment)
 
-      Promise
-        .all([comment.save(), req.post.save(), req.user.save()])
-        .then(data => res.json(data[0]))
+      comment.save()
+        .then(comment => res.json(comment))
         .catch(next)
     })
     .put(auth, (req, res, next) => {
       // change post
     })
     .delete(auth, (req, res, next) => {
-      var _id = req.post._id,
-          author = req.post.author,
-          subreddit = req.post.subreddit
-
       if (
-        req.user.username !== author &&
+        req.user.username !== req.post.author &&
         !~req.subreddit.moderators.indexOf(req.user.username)
       ) {
         return res.sendStatus(401)
       }
 
-      Promise
-        .all([
-          Post.findOneAndRemove({ _id }),
-          User.findOne({ username: author })
-        ])
-        .then(data => {
-          var user = data[1]
-
-          user.posts.pull(_id)
-          req.subreddit.posts.pull(_id)
-          return Promise.all([user.save(), req.subreddit.save()])
-        })
+      req.post
+        .remove()
         .then(() => res.sendStatus(200))
-        .catch(next)
     })
 
 // /posts
@@ -259,26 +238,14 @@ router
           author = req.comment.author
 
       if (
-        req.user.username != author &&
+        req.user.username != req.comment.author &&
         !~req.subreddit.moderators.indexOf(req.user.username)
       ) {
         return res.sendStatus(401)
       }
 
-      Promise
-        .all([
-          Comment.findOneAndRemove({ _id }),
-          User.findOne({ username: author }),
-          Post.findById(post)
-        ])
-        .then(data => {
-          var user = data[1],
-              post = data[2]
-
-          user.comments.pull(_id)
-          post.comments.pull(_id)
-          return Promise.all([user.save(), post.save()])
-        })
+      req.comment
+        .remove()
         .then(() => res.sendStatus(200))
         .catch(next)
     })

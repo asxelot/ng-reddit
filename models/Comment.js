@@ -1,29 +1,23 @@
 var mongoose = require('mongoose'),
-    shortid  = require('shortid')
+    relationship = require('mongoose-relationship'),
+    Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId
 
-var CommentSchema = new mongoose.Schema({
-  _id      : { type: String, unique: true, default: shortid.generate },
+
+var CommentSchema = new Schema({
   body     : String,
   author   : String,
   subreddit: String,
   upvotes  : [String],
   downvotes: [String],
   published: { type: Date, default: Date.now },
-  post     : { type: String, ref: 'Post' }
+  post     : { type: ObjectId, ref: 'Post', childPath: 'comments' }
 })
 
-CommentSchema.methods.vote = function(n, username, cb) {
-  var vote = n > 0 ? 'upvotes' : 'downvotes'
+CommentSchema.plugin(relationship, {
+  relationshipPathName: 'post'
+})
 
-  if (~this[vote].indexOf(username)) {
-    this[vote].pull(username)
-  }
-  else
-    this[vote].push(username)
-
-  this[n < 0 ? 'upvotes' : 'downvotes'].pull(username)
-
-  return this.save()
-}
+CommentSchema.methods.vote = require('./vote')
 
 module.exports = mongoose.model('Comment', CommentSchema)

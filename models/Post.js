@@ -1,31 +1,29 @@
 var mongoose = require('mongoose'),
-    shortid  = require('shortid')
+    relationship = require('mongoose-relationship'),
+    Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId    
 
-var PostSchema = new mongoose.Schema({
-  _id      : { type: String, unique: true, default: shortid.generate },
-  title    : String,
-  text     : String,
-  link     : String,
-  author   : String,
-  upvotes  : [String],
-  downvotes: [String],
-  subreddit: String,
-  published: { type: Date, default: Date.now },
-  comments : [{ type: String, ref: 'Comment' }]
+var PostSchema = new Schema({
+  title      : String,
+  text       : String,
+  link       : String,
+  author     : String,
+  upvotes    : [String],
+  downvotes  : [String],
+  subreddit  : String,
+  subredditId: { type: ObjectId, ref: 'Subreddit', childPath: 'posts' },
+  comments   : [{ type: ObjectId, ref: 'Comment' }],
+  published  : { type: Date, default: Date.now }
 })
 
-PostSchema.methods.vote = function(n, username) {
-  var vote = n > 0 ? 'upvotes' : 'downvotes'
+PostSchema.plugin(relationship, {
+  relationshipPathName: 'subredditId'
+})
 
-  if (~this[vote].indexOf(username)) {
-    this[vote].pull(username)
-  }
-  else
-    this[vote].push(username)
+PostSchema.post('remove', doc => {
+  mongoose.model('Comment')
+    .remove({ post: doc._id }, () => {})
+})
 
-  this[n < 0 ? 'upvotes' : 'downvotes'].pull(username)
-
-  return this.save()
-}
-
+PostSchema.methods.vote = require('./vote')
 module.exports = mongoose.model('Post', PostSchema)

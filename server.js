@@ -8,11 +8,11 @@ var express      = require('express'),
     bodyParser   = require('body-parser'),
     cookieParser = require('cookie-parser'),
     session      = require('cookie-session'),
-    configDB     = require('./config/db.js')
+    db           = require('./config/db.js')
 
 mongoose.Promise = Promise
 mongoose
-  .connect(configDB[app.settings.env])
+  .connect(db[app.settings.env])
   .connection
     .once('open', () => console.log('Connected to DB'))
     .on('error', err => console.error('MongoErr: ', err))
