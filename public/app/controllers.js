@@ -24,6 +24,8 @@ angular
         post: post._id
       }, function() {
         _remove(posts, post)
+        if (~$location.path().search('comments')) 
+          $location.path('/')
       })
     }
 

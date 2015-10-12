@@ -17,7 +17,8 @@ router
     Post
       .findById(id)
       .then(post => {
-        if (!post) return res.status(404).send('Post not found!')
+        if (!post) 
+          return res.status(404).send('Post not found!')
 
         req.post = post
         next()
@@ -40,7 +41,8 @@ router
     Comment
       .findById(id)
       .then(comment => {
-        if (!comment) return res.status(404).send('Comment not found!')
+        if (!comment) 
+          return res.status(404).send('Comment not found!')
 
         req.comment = comment
         next()
@@ -70,7 +72,7 @@ router
   .route('/check/email/:email')
     .get((req, res, next) => {
       User
-        .findOne({ 'email': req.params.email })
+        .findOne({ email: req.params.email })
         .then(user => res.json(!!user))
         .catch(next)
     })
@@ -266,13 +268,11 @@ router
 // Auth
 
 router
-  .post('/signup', passport.authenticate('signup'), (req, res) => {
-      res.json(req.user)
-    })
+  .post('/signup', passport.authenticate('signup'), (req, res) => 
+      res.json(req.user))
 
-  .post('/login', passport.authenticate('login'), (req, res) => {
-      res.json(req.user)
-    })
+  .post('/login', passport.authenticate('login'), (req, res) => 
+      res.json(req.user))
 
   .get('/logout', (req, res) => {
     req.logout()
@@ -282,8 +282,7 @@ router
 // Error
 
 router
-  .get('/error/:status', (req, res) => {
-    res.sendStatus(req.params.status)
-  })
+  .get('/error/:status', (req, res) => 
+    res.sendStatus(req.params.status))
 
 module.exports = router
