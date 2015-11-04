@@ -17,15 +17,16 @@ var src = {
 }
 
 function onError(err) {
-  console.error(err)
   gutil.beep()
+  console.error(err.toString())
+  this.emit('end')
 }
 
 gulp.task('sass', function() {
   gulp.src('public/sass/main.sass')
       .pipe(sass().on('error', onError))
       .pipe(prefix())
-      // .pipe(cssmin())
+      .pipe(cssmin())
       .pipe(rename('main.min.css'))
       .pipe(gulp.dest('public/css'))
       .pipe(livereload())
@@ -37,14 +38,10 @@ gulp.task('html', function() {
 })
 
 gulp.task('minjs', function() {
-  gulp.src(src.js)
-      .pipe(sourcemaps.init())
-        .pipe(concat('app.js'))
-        .pipe(gulp.dest('public/js'))
-        .pipe(ngAnnotate())
-        .pipe(rename('app.min.js'))
-        .pipe(uglify())
-      .pipe(sourcemaps.write('./'))
+  return gulp.src(src.js)
+      .pipe(ngAnnotate().on('error', onError))
+      .pipe(concat('app.min.js'))
+      .pipe(uglify())
       .pipe(gulp.dest('public/js'))
       .pipe(livereload())
 })

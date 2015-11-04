@@ -50,16 +50,21 @@ angular
     }
 
     $scope.isVoted = function(n, post) {
-      if (!$rootScope.user) return false
+      if (!$rootScope.user) return false  
 
-      var vote = n > 0 ? 'upvotes' : 'downvotes'
+      var vote = n > 0 ? 'upvotes' : 'downvotes' 
 
       return ~post[vote].indexOf($rootScope.user.username)
-    }
+    } 
 
-    $scope.changePage = function(n) {
+    $scope.changePage = function(n) { 
       $location.search('page', $scope.page += n)
       $anchorScroll(0)
+    }
+
+    $scope.search = function() {     
+      $location.path('/search/' + window.encodeURIComponent($scope.query))
+      $scope.query = ''
     }
 
     $rootScope.$on('$routeChangeSuccess', function() {
@@ -150,6 +155,12 @@ angular
       }, $scope.newPost, function(post) {
         $location.path('/r/' + post.subreddit + '/comments/' + post._id)
       })
+    }
+  })
+
+  .controller('searchCtrl', function($scope, results) {
+    $scope.subreddit = {
+      posts: results
     }
   })
 

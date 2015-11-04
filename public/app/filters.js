@@ -27,7 +27,7 @@ angular
     }
   })
 
-  .filter('md', function($sce) {
+  .filter('md', function($sce) { 
     return function(text) {
       return $sce.trustAsHtml(markdown.toHTML(text || ''))
     }

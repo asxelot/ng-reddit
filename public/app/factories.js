@@ -9,6 +9,10 @@ angular
     return $resource('/api/posts/')
   })
 
+  .factory('_search', function($resource) {
+    return $resource('/api/search/:query')
+  })
+
   .factory('_authUser', function($resource) {
     return $resource('/api/authcheck')
   })

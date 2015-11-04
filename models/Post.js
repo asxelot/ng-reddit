@@ -20,6 +20,8 @@ PostSchema.plugin(relationship, {
   relationshipPathName: 'subredditId'
 })
 
+PostSchema.index({ title: 'text', text: 'text', link: 'text'})
+
 PostSchema.post('remove', doc => {
   mongoose.model('Comment')
     .remove({ post: doc._id }, () => {})

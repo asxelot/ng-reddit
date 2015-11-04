@@ -55,6 +55,17 @@ angular.module('ngReddit', [
         templateUrl: 'views/submit.html',
         controller: 'submitCtrl'
       })
+      .when('/search/:query', {
+        templateUrl: 'views/_posts.html',
+        controller: 'searchCtrl',
+        resolve: {
+          results: function($route, _search) {
+            return _search.query({
+              query: $route.current.params.query
+            })
+          }
+        }
+      })      
       .when('/signup', {
         templateUrl: 'views/signup.html',
         controller: 'signupCtrl'

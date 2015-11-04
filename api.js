@@ -140,6 +140,7 @@ router
 
       post.author = req.user.username
       post.subreddit = req.subreddit.name
+      post.subredditId = req.subreddit._id
       post.upvotes.push(req.user.username)
 
       post.save()
@@ -261,6 +262,21 @@ router
       req.comment
         .vote(+req.params.vote, req.user.username)
         .then(() => res.sendStatus(200))
+        .catch(next)
+    })
+
+
+// Search
+
+router
+  .route('/search/:query')
+    .get((req, res, next) => {
+      var limit = 20,
+          skip = (req.query.page - 1 || 0) * limit
+
+      Post
+        .find({ $text: { $search: req.params.query } }, {}, { skip, limit })
+        .then(data => res.json(data))
         .catch(next)
     })
 
