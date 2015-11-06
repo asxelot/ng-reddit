@@ -7,7 +7,7 @@ describe('factories', function() {
     http = $httpBackend
   }))
    
-  describe('_remove factory', function() {
+  describe('_remove factory', function() { 
     var _remove
 
     beforeEach(inject(function(__remove_) {
@@ -22,12 +22,14 @@ describe('factories', function() {
     })
   })
 
-  describe('_vote factory', function() {
+  describe('_vote', function() {
     var _vote, 
-        url = '/posts/123/vote/1',
+        url = '/api/posts/123/vote/1',
         post = {
-          upvoted: [],
-          downvoted: []
+          _id: '123',
+          upvotes: [],
+          downvotes: [],
+          comments: []
         }
 
     beforeEach(inject(function(__vote_) {
@@ -38,18 +40,10 @@ describe('factories', function() {
     }))
 
     it('should upvote post', function() {
-      _vote(1, post, url)
+      _vote(post, 1)
       http.flush()
 
-      expect(post.upvoted).toEqual(['foo'])
-    })
-
-    it('should downvote post after upvote', function() {
-      _vote(-1, post, url)
-      http.flush()
-
-      expect(post.upvoted).toEqual([])
-      expect(post.downvoted).toEqual(['foo'])
+      expect(post.upvotes).toEqual(['foo'])
     })
   })
 })

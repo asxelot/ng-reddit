@@ -219,9 +219,6 @@ router
 router
   .route('/posts/:post/vote/:vote')
     .put(auth, (req, res, next) => {
-      if (Math.abs(req.params.vote) != 1)
-        return res.sendStatus(406)
-
       req.post
         .vote(+req.params.vote, req.user.username)
         .then(post => res.sendStatus(200))
@@ -256,9 +253,6 @@ router
 router
   .route('/comments/:comment/vote/:vote')
     .put(auth, (req, res, next) => {
-      if (Math.abs(req.params.vote) !== 1)
-        return res.sendStatus(406)
-
       req.comment
         .vote(+req.params.vote, req.user.username)
         .then(() => res.sendStatus(200))

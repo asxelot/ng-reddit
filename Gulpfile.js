@@ -6,7 +6,6 @@ var gulp       = require('gulp'),
     uglify     = require('gulp-uglify'),
     concat     = require('gulp-concat'),
     rename     = require('gulp-rename'),
-    gutil      = require('gulp-util'),
     prefix     = require('gulp-autoprefixer'),
     livereload = require('gulp-livereload')
 
@@ -17,8 +16,7 @@ var src = {
 }
 
 function onError(err) {
-  gutil.beep()
-  console.error(err.toString())
+  console.error("\007", err.toString())
   this.emit('end')
 }
 

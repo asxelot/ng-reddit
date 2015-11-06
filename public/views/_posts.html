@@ -1,11 +1,11 @@
 <div class="posts">
   <div ng-repeat="post in subreddit.posts | orderBy: '-published'" class="post content">
     <div class="votes">
-      <i class="material-icons" ng-click="vote(1, post)" ng-class="{active: isVoted(1, post)}">keyboard_arrow_up</i>
-      <div ng-class="{active: isVoted(1, post) || isVoted(-1, post)}">
+      <i class="material-icons" ng-click="vote(post, 1)" ng-class="{active: isVoted(post, 1)}">keyboard_arrow_up</i>
+      <div ng-class="{active: isVoted(post, 1) || isVoted(post, -1)}">
         {{post.upvotes.length - post.downvotes.length}}
       </div>
-      <i class="material-icons" ng-click="vote(-1, post)" ng-class="{active: isVoted(-1, post)}">keyboard_arrow_down</i>
+      <i class="material-icons" ng-click="vote(post, -1)" ng-class="{active: isVoted(post, -1)}">keyboard_arrow_down</i>
     </div>
     <div class="entry" ng-init="isExpanded = false">
       <div class="title">

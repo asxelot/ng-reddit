@@ -2,7 +2,7 @@ angular
   .module('ngReddit')
 
   .controller('mainCtrl', function($rootScope, $scope, $http, $location,
-                          $routeParams, $anchorScroll, _subreddit, _remove) {
+                          $routeParams, $anchorScroll, _subreddit, _vote) {
     $scope.page = +$location.search().page || 1
     $rootScope.errors = []
     $rootScope.history = []
@@ -29,27 +29,9 @@ angular
       })
     }
 
-    $scope.vote = function(n, post) {
-      if (!$rootScope.user) return false
+    $scope.vote = _vote
 
-      var url = '/api/' + 
-                (post.comments ? 'posts/' : 'comments/') +
-                post._id + '/vote/' + n
-
-      $http.put(url).success(function() {
-        var vote = n > 0 ? 'upvotes' : 'downvotes',
-            username = $rootScope.user.username
-
-        if (~post[vote].indexOf(username))
-          _remove(post[vote], username)
-        else
-          post[vote].push(username)
-        
-        _remove(post[n < 0 ? 'upvotes' : 'downvotes'], username)
-      })
-    }
-
-    $scope.isVoted = function(n, post) {
+    $scope.isVoted = function(post, n) {
       if (!$rootScope.user) return false  
 
       var vote = n > 0 ? 'upvotes' : 'downvotes' 

@@ -24,6 +24,27 @@ angular
     }
   })
 
+  .factory('_vote', function($http, $rootScope, _remove) {
+    return function(post, n) {
+      if (!$rootScope.user) return
+        
+      var username = $rootScope.user.username,
+          vote = n > 0 ? 'upvotes' : 'downvotes',
+          url = '/api/' + 
+                (post.comments ? 'posts/' : 'comments/') + 
+                post._id + '/vote/' + n
+
+      $http.put(url).success(function() {
+        if (~post[vote].indexOf(username))
+          _remove(post[vote], username)
+        else
+          post[vote].push(username)
+        
+        _remove(post[n < 0 ? 'upvotes' : 'downvotes'], username)
+      })
+    }
+  })
+
   .factory('_afterLogin', function($http, $rootScope, $location) {
     return function(user) {
       $rootScope.user = user

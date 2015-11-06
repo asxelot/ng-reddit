@@ -7,7 +7,7 @@ describe('signup page', function() {
       submit = $('button[type="submit"]'),
       errors = element.all(by.repeater('error in errors track by $index'))
 
-  function signUp(name, mail, pass) {
+  function signUp(name, mail, pass) { 
     username.sendKeys(name)
     email.sendKeys(mail)
     password.sendKeys(pass)

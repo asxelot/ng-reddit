@@ -21,7 +21,7 @@
               name="email"
               ng-model="newUser.email"
               ng-model-options="{ debounce: 500 }"
-              email-validator
+              email-exist
               required>
       <label>Email</label>
       <div ng-messages="signupForm.email.$error" class="error">
