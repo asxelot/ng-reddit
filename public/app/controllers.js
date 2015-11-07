@@ -2,10 +2,11 @@ angular
   .module('ngReddit')
 
   .controller('mainCtrl', function($rootScope, $scope, $http, $location,
-                          $routeParams, $anchorScroll, _subreddit, _vote) {
+                          $anchorScroll, _subreddit, _vote) {
     $scope.page = +$location.search().page || 1
     $rootScope.errors = []
     $rootScope.history = []
+    $scope.vote = _vote
 
     $http.get('/api/check/auth').success(function(user) {
       $rootScope.user = user
@@ -17,7 +18,7 @@ angular
       })
     } 
 
-    $scope.delete = function(posts, post) {
+    $scope.delete = function(posts, post) { 
       return _subreddit.delete({
         subreddit: post.subreddit,
         comments: 'comments',
@@ -28,8 +29,6 @@ angular
           $location.path('/')
       })
     }
-
-    $scope.vote = _vote
 
     $scope.isVoted = function(post, n) {
       if (!$rootScope.user) return false  

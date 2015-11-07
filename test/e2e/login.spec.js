@@ -3,7 +3,7 @@ describe('login page', function() {
       email = element(by.model('loggedUser.email')),
       password = element(by.model('loggedUser.password')),
       submit = $('button[type="submit"]'),
-      errors = element.all(by.repeater('error in errors')),
+      errors = $$('.error'),
       username = $('#user')
 
   function login(mail, pass) {
@@ -23,13 +23,13 @@ describe('login page', function() {
   })
 
   it('should show error "Wrong password"', function() {
-    login('foo@bar.com', '1234')
+    login('foo@m.com', '1234')
 
     expect(errors.last().getText()).toBe('Wrong password')
   })
 
   it('should redirect to "/" after login', function() {
-    login('foo@bar.com', '123')
+    login('foo@m.com', '123')
 
     expect(browser.getLocationAbsUrl()).toBe('/')
     expect(username.getText()).toBe('foo')
