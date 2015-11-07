@@ -1,7 +1,6 @@
 module.exports = function(n, username) {
   var vote = n > 0 ? 'upvotes' : 'downvotes'
 
-  console.log(this)
   if (~this[vote].indexOf(username))
     this[vote].pull(username)
   else
