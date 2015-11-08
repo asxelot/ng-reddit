@@ -14,6 +14,10 @@ var SubredditSchema = new mongoose.Schema({
   banned: [String]
 })
 
+SubredditSchema.statics.findByName = function(name, cb) {
+  return this.findOne({ name: name.toLowerCase() }, cb)
+}
+
 SubredditSchema.post('remove', doc => {
   mongoose.model('Post')
     .remove({ subredditId: doc._id }, () => {})

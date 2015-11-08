@@ -17,7 +17,7 @@ var paths = {
   },
   dist: {
     css: 'public/css',
-    js: 'public/js'
+    js : 'public/js'
   }
 }
 
@@ -38,7 +38,7 @@ gulp.task('sass', function() {
       .pipe(prefix())
       .pipe(cssmin())
       .pipe(rename({ suffix: '.min' }))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(paths.dist.css))
     .pipe(livereload())
 })
@@ -49,7 +49,7 @@ gulp.task('minjs', function() {
       .pipe(ngAnnotate().on('error', onError))
       .pipe(concat('app.min.js'))
       .pipe(uglify())
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(paths.dist.js))
     .pipe(livereload())
 })

@@ -27,7 +27,7 @@ router
   })
   .param('subreddit', (req, res, next, name) => {
     Subreddit
-      .findOne({ name })
+      .findByName(name)
       .then(subreddit => {
         if (!subreddit)
           return res.status(404).send('Subreddit not found')
@@ -54,7 +54,7 @@ router
   .route('/check/r/:subr')
     .get((req, res, next) => {
       Subreddit
-        .findOne({ name: req.params.subr })
+        .findByName(req.params.subr)
         .then(subreddit => res.json(!!subreddit))
         .catch(next)
     })
@@ -63,7 +63,7 @@ router
   .route('/check/u/:username')
     .get((req, res, next) => {
       User
-        .findOne({ username: req.params.username.toLowerCase() })
+        .findByName(req.params.username)
         .then(user => res.json(!!user))
         .catch(next)
     })
@@ -92,8 +92,9 @@ router
         .catch(next)
     })
     .post(auth, (req, res, next) => {
-      var subreddit = new Subreddit(_.pick(req.body, 'name',
-                          'title', 'description', 'sidebar'))
+      var subreddit = new Subreddit(
+        _.pick(req.body, 'name', 'title', 'description', 'sidebar')
+      )
 
       if (!subreddit.name || !subreddit.title || !subreddit.description)
         return res.sendStatus(406)
@@ -189,6 +190,7 @@ router
       req.post
         .remove()
         .then(() => res.sendStatus(200))
+        .catch(next)
     })
 
 // /posts
@@ -197,12 +199,13 @@ router
   .route('/posts')
     .get((req, res, next) => {
       var posts,
-          limit = 20,
-          skip = (req.query.page - 1 || 0) * limit
+          sort = '-published',
+          skip = (req.query.page - 1 || 0) * limit,
+          limit = 20
 
       Promise
         .all([
-          Post.find({}, {}, { sort: '-published', skip, limit }),
+          Post.find({}, {}, { sort, skip, limit }),
           Post.count()
         ])
         .then(data => {
@@ -269,7 +272,9 @@ router
           skip = (req.query.page - 1 || 0) * limit
 
       Post
-        .find({ $text: { $search: req.params.query } }, {}, { skip, limit })
+        .find({ 
+          $text: { $search: req.params.query } 
+        }, {}, { skip, limit })
         .then(data => res.json(data))
         .catch(next)
     })
@@ -278,21 +283,26 @@ router
 // Auth
 
 router
-  .post('/signup', passport.authenticate('signup'), (req, res) => 
+  .route('/signup')
+    .post(passport.authenticate('signup'), (req, res) => 
       res.json(req.user))
 
-  .post('/login', passport.authenticate('login'), (req, res) => 
+router
+  .route('/login')
+    .post(passport.authenticate('login'), (req, res) => 
       res.json(req.user))
 
-  .get('/logout', (req, res) => {
-    req.logout()
-    res.sendStatus(200)
-  })
+router
+  .route('/logout')
+    .get((req, res) => {
+      req.logout()
+      res.sendStatus(200)
+    })
 
 // Error
 
 router
-  .get('/error/:status', (req, res) => 
-    res.sendStatus(req.params.status))
+  .route('/error/:status')
+    .get((req, res) => res.sendStatus(req.params.status))
 
 module.exports = router

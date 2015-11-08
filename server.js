@@ -37,8 +37,8 @@ app
 
   .use((err, req, res, next) => {
     if (err) {
-      console.error('Server error: ', err)
-      res.status(500).send(err)
+      console.error('Server error: ', err.toString())
+      res.status(500).send(err.toString())
     }
   })
 

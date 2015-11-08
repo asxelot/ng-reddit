@@ -2,7 +2,7 @@ angular
   .module('ngReddit')
 
   .controller('mainCtrl', function($rootScope, $scope, $http, $location,
-                          $anchorScroll, _subreddit, _vote) {
+                          $anchorScroll, _subreddit, _vote, _remove) {
     $scope.page = +$location.search().page || 1
     $rootScope.errors = []
     $rootScope.history = []
