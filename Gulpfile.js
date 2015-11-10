@@ -11,8 +11,8 @@ var gulp       = require('gulp'),
 
 var paths = {
   src: {
-    sass: 'public/sass/main.sass',
-    html: ['public/views/*.html', 'public/index.html'],
+    sass: ['public/sass/main.sass', 'public/sass/*.sass'],
+    html: ['public/index.html', 'public/views/*.html'],
     js  : 'public/app/*.js'
   },
   dist: {
@@ -32,7 +32,7 @@ gulp.task('html', function() {
 })
 
 gulp.task('sass', function() {
-  return gulp.src(paths.src.sass)
+  return gulp.src(paths.src.sass[0])
     .pipe(sourcemaps.init())
       .pipe(sass().on('error', onError))
       .pipe(prefix())

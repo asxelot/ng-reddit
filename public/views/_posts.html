@@ -1,11 +1,11 @@
 <div class="posts">
   <div ng-repeat="post in subreddit.posts | orderBy: '-published'" class="post content">
     <div class="votes">
-      <i class="material-icons" ng-click="vote(post, 1)" ng-class="{active: isVoted(post, 1)}">keyboard_arrow_up</i>
+      <i class="material-icons" ng-click="vote(post, 1)" ng-class="{active: isVoted(post, 1)}">&#xE316;</i>
       <div ng-class="{active: isVoted(post, 1) || isVoted(post, -1)}">
         {{post.upvotes.length - post.downvotes.length}}
       </div>
-      <i class="material-icons" ng-click="vote(post, -1)" ng-class="{active: isVoted(post, -1)}">keyboard_arrow_down</i>
+      <i class="material-icons" ng-click="vote(post, -1)" ng-class="{active: isVoted(post, -1)}">&#xE313;</i>
     </div>
     <div class="entry" ng-init="isExpanded = false">
       <div class="title">
@@ -18,7 +18,7 @@
         <span class="muted">({{post.link|hostname}})</span>
       </div>
       <p class="about muted">
-        <i ng-show="post.text" ng-click="isExpand = !isExpand" class="material-icons">{{isExpand ? 'remove_circle' : 'add_circle'}}</i>
+        <i ng-show="post.text" ng-click="isExpand = !isExpand" class="material-icons">{{isExpand ? '&#xE15C;' : '&#xE147;'}}</i>
         submited {{post.published | fromNow}} by {{post.author}}
         <span ng-hide="subreddit.name">
           &nbsp;to <a href="/r/{{post.subreddit}}">/r/{{post.subreddit}}</a>
